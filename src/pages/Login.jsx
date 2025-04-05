@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext'; // Import the auth context
 import Header from '../components/Header';
 import Footer from '../components/Footer';
 
@@ -12,6 +13,7 @@ const Login = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth(); // Get login method from context
 
   const handleChange = (e) => {
     setFormData({
@@ -47,14 +49,25 @@ const Login = () => {
       });
       
       if (response.status === 200) {
+        // Extract token from response
+        const token = response.data.token;
+        
+        // Use context login method to update global state
+        login(token);
+        
+        // Redirect to dashboard
         navigate('/dashboard');
       }
     } catch (error) {
-      if (error.response?.status === 401) {
-        setErrors({ general: 'Invalid military credentials' });
-      } else {
-        setErrors({ general: 'Login failed. Please try again.' });
+      let errorMessage = 'Login failed. Please try again.';
+      if (error.response) {
+        if (error.response.status === 401) {
+          errorMessage = 'Invalid military credentials';
+        } else if (error.response.data?.message) {
+          errorMessage = error.response.data.message;
+        }
       }
+      setErrors({ general: errorMessage });
     } finally {
       setLoading(false);
     }
@@ -62,96 +75,101 @@ const Login = () => {
 
   return (
     <>
-        <Header/>
-        <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <Header/>
+      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
-            <h2 className="mt-6 text-center text-3xl font-bold text-green-900">
+          <h2 className="mt-6 text-center text-3xl font-bold text-green-900">
             Defence Health Services Login
-            </h2>
-            <p className="mt-2 text-center text-sm text-gray-600">
+          </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
             Access your military healthcare fund management account
-            </p>
+          </p>
         </div>
 
         <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-            <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
             <form onSubmit={handleSubmit} className="space-y-6">
-                <div>
+              {/* Email Input - remains same */}
+              <div>
                 <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                    Military Email
+                  Military Email
                 </label>
                 <div className="mt-1">
-                    <input
+                  <input
                     id="email"
                     name="email"
                     type="email"
                     value={formData.email}
                     onChange={handleChange}
                     className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 ${
-                        errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-yellow-400'
+                      errors.email ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-yellow-400'
                     }`}
-                    />
-                    {errors.email && (
+                  />
+                  {errors.email && (
                     <p className="mt-2 text-sm text-red-500">{errors.email}</p>
-                    )}
+                  )}
                 </div>
-                </div>
+              </div>
 
-                <div>
+              {/* Password Input - remains same */}
+              <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                    Password
+                  Password
                 </label>
                 <div className="mt-1">
-                    <input
+                  <input
                     id="password"
                     name="password"
                     type="password"
                     value={formData.password}
                     onChange={handleChange}
                     className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 ${
-                        errors.password ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-yellow-400'
+                      errors.password ? 'border-red-500 focus:ring-red-500' : 'border-gray-300 focus:ring-yellow-400'
                     }`}
-                    />
-                    {errors.password && (
+                  />
+                  {errors.password && (
                     <p className="mt-2 text-sm text-red-500">{errors.password}</p>
-                    )}
+                  )}
                 </div>
-                </div>
+              </div>
 
-                {errors.general && (
+              {/* Error Message Display */}
+              {errors.general && (
                 <div className="text-red-500 text-sm text-center">
-                    {errors.general}
+                  {errors.general}
                 </div>
-                )}
+              )}
 
-                <div>
+              {/* Submit Button */}
+              <div>
                 <button
-                    type="submit"
-                    disabled={loading}
-                    className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
+                  type="submit"
+                  disabled={loading}
+                  className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white ${
                     loading ? 'bg-gray-400' : 'bg-green-900 hover:bg-green-800'
-                    } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400`}
+                  } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400`}
                 >
-                    {loading ? 'Authenticating...' : 'Secure Login'}
+                  {loading ? 'Authenticating...' : 'Secure Login'}
                 </button>
-                </div>
+              </div>
 
-                <div className="text-center text-sm">
+              {/* Registration Link */}
+              <div className="text-center text-sm">
                 <p className="text-gray-600">
-                    Don't have an account?{' '}
-                    <Link 
+                  Don't have an account?{' '}
+                  <Link 
                     to="/register" 
                     className="font-medium text-green-900 hover:text-yellow-400"
-                    >
+                  >
                     Request Access
-                    </Link>
+                  </Link>
                 </p>
-                </div>
+              </div>
             </form>
-            </div>
+          </div>
         </div>
-        </div>
-        <Footer/>
+      </div>
+      <Footer/>
     </>
   );
 };
