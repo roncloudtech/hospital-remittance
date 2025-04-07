@@ -11,6 +11,7 @@ const Register = () => {
     email: "",
     phoneNumber: "",
     password: "",
+    role: "",
   });
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
@@ -47,6 +48,11 @@ const Register = () => {
       newErrors.phoneNumber = "Invalid phone number format";
     }
 
+    // Add role validation
+    if (!formData.role) {
+      newErrors.role = "Role is required";
+    }
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -63,6 +69,7 @@ const Register = () => {
         email: formData.email,
         phone_number: formData.phoneNumber || null,
         password: formData.password,
+        role: formData.role,
       });
 
       if (response.status === 201) {
@@ -150,6 +157,35 @@ const Register = () => {
                       </p>
                     )}
                   </div>
+                </div>
+              </div>
+
+              <div>
+                <label
+                  htmlFor="role"
+                  className="block text-sm font-medium text-gray-700"
+                >
+                  Role
+                </label>
+                <div className="mt-1">
+                  <select
+                    id="role"
+                    name="role"
+                    value={formData.role}
+                    onChange={handleChange}
+                    className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 ${
+                      errors.role
+                        ? "border-red-500 focus:ring-red-500"
+                        : "border-gray-300 focus:ring-yellow-400"
+                    }`}
+                  >
+                    <option value="">Select Role</option>
+                    <option value="admin">Admin</option>
+                    <option value="remitter">Remitter</option>
+                  </select>
+                  {errors.role && (
+                    <p className="mt-2 text-sm text-red-500">{errors.role}</p>
+                  )}
                 </div>
               </div>
 
