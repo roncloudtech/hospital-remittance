@@ -40,7 +40,9 @@ const Register = () => {
     }
     if (
       formData.phoneNumber &&
-      !/^\+?[1-9]\d{1,14}$/.test(formData.phoneNumber)
+      !/^\+234[789][01]\d{8}$|^0[789][01]\d{8}$/.test(formData.phoneNumber)
+      // formData.phoneNumber &&
+      // !/^\+?[1-9]\d{1,14}$/.test(formData.phoneNumber)
     ) {
       newErrors.phoneNumber = "Invalid phone number format";
     }
