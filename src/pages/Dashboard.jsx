@@ -1,9 +1,11 @@
 import React, { useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { ChartBarIcon, CurrencyDollarIcon, DocumentTextIcon, ShieldCheckIcon, UserCircleIcon } from '@heroicons/react/24/outline';
+import { useAuth } from '../context/AuthContext'; // Import the auth context
 
 const Dashboard = () => {
   const navigate = useNavigate();
+  const { user } = useAuth(); // Get user from context
 
   // Check authentication status
   useEffect(() => {
@@ -71,13 +73,17 @@ const Dashboard = () => {
           <div className="flex justify-between items-center px-6 py-4">
             <div>
               <h1 className="text-xl font-bold text-green-900">Capitation Fund Dashboard</h1>
-              <p className="text-sm text-gray-600">Welcome back, Commander</p>
+              <p className="text-sm text-gray-600">
+                Welcome back, {user?.role === 'admin' ? 'Commander' : 'Officer'} {user?.firstname} {user?.lastname}
+              </p>
             </div>
             <div className="flex items-center">
               <UserCircleIcon className="h-8 w-8 text-green-900 mr-2" />
               <div>
-                <p className="text-sm font-medium">John Doe</p>
-                <p className="text-xs text-gray-600">Military ID: NG-2345</p>
+                <p className="text-sm font-medium">
+                  {user?.firstname} {user?.lastname}
+                </p>
+                <p className="text-xs text-gray-600">Role: {user?.role}</p>
               </div>
             </div>
           </div>
@@ -110,13 +116,11 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div className="bg-white p-6 rounded-lg shadow-sm border border-green-100">
               <h3 className="text-lg font-medium text-green-900 mb-4">Monthly Fund Utilization</h3>
-              {/* Add Chart component here */}
               <div className="h-64 bg-gray-50 rounded-md"></div>
             </div>
             
             <div className="bg-white p-6 rounded-lg shadow-sm border border-green-100">
               <h3 className="text-lg font-medium text-green-900 mb-4">Expenditure Trends</h3>
-              {/* Add Chart component here */}
               <div className="h-64 bg-gray-50 rounded-md"></div>
             </div>
           </div>

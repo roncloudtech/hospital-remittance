@@ -36,24 +36,27 @@ const Login = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validateForm()) return;
-
+  
     setLoading(true);
     try {
+      // First get CSRF cookie
+      await axios.get('http://localhost:8000/sanctum/csrf-cookie');
+  
+      // Then make login request
       const response = await axios.post('http://localhost:8000/api/login', {
         email: formData.email,
         password: formData.password
       });
       
       if (response.status === 200) {
-        // Extract token from response
-        const token = response.data.token;
+        // Extract both token and user from response
+        const { token, user } = response.data;
         
-        // Use context login method to update global state
-        login(token);
+        // Use context login with both parameters
+        login(token, user);
         
         // Redirect to dashboard
         navigate('/dashboard');
@@ -72,6 +75,42 @@ const Login = () => {
       setLoading(false);
     }
   };
+
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   if (!validateForm()) return;
+
+  //   setLoading(true);
+  //   try {
+  //     const response = await axios.post('http://localhost:8000/api/login', {
+  //       email: formData.email,
+  //       password: formData.password
+  //     });
+      
+  //     if (response.status === 200) {
+  //       // Extract token from response
+  //       const token = response.data.token;
+        
+  //       // Use context login method to update global state
+  //       login(token);
+        
+  //       // Redirect to dashboard
+  //       navigate('/dashboard');
+  //     }
+  //   } catch (error) {
+  //     let errorMessage = 'Login failed. Please try again.';
+  //     if (error.response) {
+  //       if (error.response.status === 401) {
+  //         errorMessage = 'Invalid military credentials';
+  //       } else if (error.response.data?.message) {
+  //         errorMessage = error.response.data.message;
+  //       }
+  //     }
+  //     setErrors({ general: errorMessage });
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   return (
     <>
