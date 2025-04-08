@@ -1,20 +1,8 @@
-import React, { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { UserCircleIcon } from '@heroicons/react/24/outline';
-import { useAuth } from '../context/AuthContext'; // Import the auth context
+import React from 'react';
 import DashboardSideBar from '../components/DashboardSideBar';
+import DashboardHeader from '../components/DashboardHeader';
 
 const Dashboard = () => {
-  const navigate = useNavigate();
-  const { user } = useAuth(); // Get user from context
-
-  // Check authentication status
-  useEffect(() => {
-    const token = localStorage.getItem('military_token');
-    if (!token) {
-      navigate('/login');
-    }
-  }, [navigate]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -24,25 +12,8 @@ const Dashboard = () => {
       {/* Main Content */}
       <div className="md:ml-64">
         {/* Header */}
-        <header className="bg-white shadow-sm">
-          <div className="flex justify-between items-center px-6 py-4">
-            <div>
-              <h1 className="text-xl font-bold text-green-900">Capitation Fund Dashboard</h1>
-              <p className="text-sm text-gray-600">
-                Welcome back, {user?.role === 'admin' ? 'Commander' : 'Officer'} {user?.firstname} {user?.lastname}
-              </p>
-            </div>
-            <div className="flex items-center">
-              <UserCircleIcon className="h-8 w-8 text-green-900 mr-2" />
-              <div>
-                <p className="text-sm font-medium">
-                  {user?.firstname} {user?.lastname}
-                </p>
-                <p className="text-xs text-gray-600">Role: {user?.role}</p>
-              </div>
-            </div>
-          </div>
-        </header>
+        <DashboardHeader PageTitle="Dashboard"/>
+        
 
         {/* Dashboard Content */}
         <main className="p-6">

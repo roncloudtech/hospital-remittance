@@ -179,7 +179,7 @@ const Register = () => {
                         : "border-gray-300 focus:ring-yellow-400"
                     }`}
                   >
-                    {/* <option value="">Select Role</option> */}
+                    <option value="">Select Role</option>
                     <option value="remitter">Remitter</option>
                     <option value="admin">Admin</option>
                   </select>

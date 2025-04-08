@@ -5,70 +5,72 @@ import axios from "axios";
 import DashboardSideBar from "../components/DashboardSideBar";
 import DashboardHeader from "../components/DashboardHeader";
 
-const ManageHospitals = () => {
+const ManageUsers = () => {
   const { authToken, user } = useAuth();
   const navigate = useNavigate();
-  const [hospitals, setHospitals] = useState([]);
-//   const [hospitalName, setHospitalName] = useState("");
-//   const [hospitalLocation, setHospitalLocation] = useState("");
+  const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // Redirect if not admin
     if (user?.role !== "admin") {
       navigate("/unauthorized");
       return;
     }
 
-    const fetchHospitals = async () => {
+    const fetchUsers = async () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "http://localhost:8000/api/hospitals",
+          "http://localhost:8000/api/getusers",
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
             },
           }
         );
-        setHospitals(response.data);
+        setUsers(response.data);
       } catch (err) {
-        setError("Failed to fetch hospitals");
+        setError("Failed to fetch users");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchHospitals();
+    fetchUsers();
   }, [authToken, navigate, user]);
 
   return (
     <div className="min-h-screen bg-gray-50">
       <DashboardSideBar />
       <div className="md:ml-64 p-6">
-        <DashboardHeader PageTitle="Manage Hospitals"/>
+        <DashboardHeader PageTitle="Manage Users" />
 
         <div className="max-w-7xl mx-auto">
-          {/* Add Hospital Form */}
+          {/* Add User Section */}
           <div className="bg-white p-6 rounded-lg shadow-sm border border-green-100 mb-6">
             <h2 className="text-lg font-medium text-green-900 mb-4">
-              Add New Hospital
+              Add New User
             </h2>
-              <Link to="/add-hospital" className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
-                  loading ? "bg-gray-400" : "bg-green-900 hover:bg-green-800"
-                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400`}>Add Hospital</Link>
+            <Link
+              to="/register"
+              className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
+                loading ? "bg-gray-400" : "bg-green-900 hover:bg-green-800"
+              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400`}
+            >
+              Add User
+            </Link>
           </div>
 
-          {/* Hospitals List */}
+          {/* Users List */}
           <div className="bg-white rounded-lg shadow-sm border border-green-100">
             <div className="p-6">
               <h2 className="text-lg font-medium text-green-900 mb-4">
-                Registered Military Hospitals
+                Registered Users
               </h2>
 
               {loading ? (
-                <p className="text-gray-600">Loading hospitals...</p>
+                <p className="text-gray-600">Loading users...</p>
               ) : error ? (
                 <p className="text-red-500">{error}</p>
               ) : (
@@ -77,10 +79,13 @@ const ManageHospitals = () => {
                     <thead>
                       <tr>
                         <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-green-900 uppercase tracking-wider">
-                          Hospital Name
+                          Name
                         </th>
                         <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-green-900 uppercase tracking-wider">
-                          Location
+                          Email
+                        </th>
+                        <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-green-900 uppercase tracking-wider">
+                          Role
                         </th>
                         <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-green-900 uppercase tracking-wider">
                           Actions
@@ -88,13 +93,16 @@ const ManageHospitals = () => {
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {hospitals.map((hospital) => (
-                        <tr key={hospital.id}>
+                      {users.map((user) => (
+                        <tr key={user.id}>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {hospital.name}
+                            {user.firstname} {user.lastname}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {hospital.location}
+                            {user.email}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {user.role}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm">
                             <button className="text-yellow-600 hover:text-yellow-900 mr-4">
@@ -118,4 +126,4 @@ const ManageHospitals = () => {
   );
 };
 
-export default ManageHospitals;
+export default ManageUsers;

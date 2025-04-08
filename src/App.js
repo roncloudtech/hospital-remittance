@@ -9,6 +9,8 @@ import UserRoute from "./components/UserRoute";
 import ManageHospitals from "./pages/ManageHospitals";
 // import RemitFund from "./pages/RemitFund";
 import Unauthorized from "./pages/Unauthorized";
+import AddHospital from "./pages/AddHospital";
+import ManageUsers from "./pages/ManageUsers";
 
 // Main application component
 function App() {
@@ -28,8 +30,10 @@ function App() {
 
         {/* Admin-only routes */}
         <Route element={<AdminRoute />}>
-          <Route path="/manage-hospitals" element={<ManageHospitals />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/manage-users" element={<ManageUsers />}/>
+          <Route path="/manage-hospitals" element={<ManageHospitals />} />
+          <Route path="/add-hospital" element={<AddHospital/>}/>
         </Route>
 
         {/* Remitter-only routes */}
