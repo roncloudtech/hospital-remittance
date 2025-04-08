@@ -179,9 +179,9 @@ const Register = () => {
                         : "border-gray-300 focus:ring-yellow-400"
                     }`}
                   >
-                    <option value="">Select Role</option>
-                    <option value="admin">Admin</option>
+                    {/* <option value="">Select Role</option> */}
                     <option value="remitter">Remitter</option>
+                    <option value="admin">Admin</option>
                   </select>
                   {errors.role && (
                     <p className="mt-2 text-sm text-red-500">{errors.role}</p>
