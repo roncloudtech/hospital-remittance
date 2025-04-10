@@ -52,7 +52,7 @@ const Header = () => {
               to="/login"
               className="text-green-900 hover:text-yellow-400 px-3 py-2 text-sm font-medium"
             >
-              Personnel Login
+              Login
             </Link>
             <Link
               to="/contact"

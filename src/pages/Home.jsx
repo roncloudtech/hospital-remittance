@@ -37,7 +37,7 @@ const Home = () => {
                   to="/login"
                   className="inline-flex items-center px-8 py-3 border border-transparent text-lg font-medium rounded-md text-green-900 bg-yellow-400 hover:bg-yellow-500"
                 >
-                  Personnel Login
+                Login
                 </Link>
                 <Link
                   to="/about"
