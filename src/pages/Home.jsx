@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import MilitaryHospitalImage from "../assets/flag.jpg"; // Add appropriate image
-import NigerianFlag from "../assets/ng-cods.gif"; // Add flag image
+import NigerianFlag from "../assets/nigeria-army.png"; // Add flag image
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
@@ -22,7 +22,7 @@ const Home = () => {
                   className="h-16 w-16 mr-4"
                 />
                 <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-                  Nigerian Military Hospitals <br />
+                  Nigerian Army Hospitals <br />
                   <span className="text-yellow-400">
                     Capitation Fund Portal
                   </span>
@@ -30,7 +30,7 @@ const Home = () => {
               </div>
               <p className="mt-6 max-w-3xl mx-auto text-xl text-gray-100">
                 Secure and efficient management of healthcare funds for our
-                nation's military personnel
+                nation's army personnel
               </p>
               <div className="mt-8 flex justify-center gap-4">
                 <Link
@@ -106,7 +106,7 @@ const Home = () => {
                   </h3>
                 </div>
                 <p className="text-gray-600">
-                  Monitor fund disbursements across all military healthcare
+                  Monitor fund disbursements across all nigeria army healthcare
                   facilities nationwide
                 </p>
               </div>
@@ -191,7 +191,7 @@ const Home = () => {
                         d="M5 13l4 4L19 7"
                       />
                     </svg>
-                    Navy Healthcare Facilities
+                    Army Healthcare Facilities
                   </li>
                   <li className="flex items-center">
                     <svg
@@ -207,7 +207,7 @@ const Home = () => {
                         d="M5 13l4 4L19 7"
                       />
                     </svg>
-                    Air Force Medical Centers
+                    Army Medical Centers
                   </li>
                   <li className="flex items-center">
                     <svg
@@ -236,7 +236,7 @@ const Home = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid md:grid-cols-4 gap-8 text-center">
               <div className="p-6 border border-green-100 rounded-lg">
-                <div className="text-3xl font-bold text-green-900">35+</div>
+                <div className="text-3xl font-bold text-green-900">100+</div>
                 <div className="text-gray-600 mt-2">Military Hospitals</div>
               </div>
               <div className="p-6 border border-green-100 rounded-lg">

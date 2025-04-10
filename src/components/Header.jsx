@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import NigerianFlag from "../assets/ng-cods.gif";
+import NigerianFlag from "../assets/nigeria-army.png";
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -19,7 +19,7 @@ const Header = () => {
                 className="h-8 w-8 mr-2"
               />
               <span className="text-green-900 text-xl font-bold">
-                Defence Health <span className="text-yellow-400">Services</span>
+                Nigeria Army Health <span className="text-yellow-400">Services</span>
               </span>
             </Link>
           </div>

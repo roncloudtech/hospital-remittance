@@ -74,7 +74,7 @@ const AddHospital = () => {
 
     setLoading(true);
     try {
-      await axios.post('http://localhost:8000/api/hospitals', formData, {
+      await axios.post('http://localhost:8000/api/addhospital', formData, {
         headers: {
           Authorization: `Bearer ${authToken}`
         }
