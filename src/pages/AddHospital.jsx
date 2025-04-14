@@ -12,7 +12,7 @@ const AddHospital = () => {
   const [formData, setFormData] = useState({
     hospital_id: '',
     hospital_name: '',
-    hospital_formation: '',
+    military_division: '',
     address: '',
     phone_number: '',
     hospital_remitter: ''
@@ -45,21 +45,26 @@ const AddHospital = () => {
     const newErrors = {};
     const idPattern = /^[A-Z]{3}-\d{6}$/;
     
+    // Hospital ID validation
     if (!formData.hospital_id.match(idPattern)) {
       newErrors.hospital_id = 'Invalid ID format (XXX-123456)';
     }
+    
+    // Required field validations
     if (!formData.hospital_name.trim()) {
       newErrors.hospital_name = 'Hospital name is required';
     }
-    if (!formData.hospital_formation.trim()) {
-      newErrors.hospital_formation = 'Formation is required';
+    if (!formData.military_division.trim()) {
+      newErrors.military_division = 'Formation is required';
     }
     if (!formData.address.trim()) {
       newErrors.address = 'Address is required';
     }
-    if (!/^\+234\d{10}$/.test(formData.phone_number)) {
+    // Phone number validation
+    if (!/^\+234\d{10}$|^0\d{10}$/.test(formData.phone_number)) {
       newErrors.phone_number = 'Invalid Nigerian phone format (+234...)';
     }
+    // Remitter validation (keep original field name)
     if (!formData.hospital_remitter) {
       newErrors.hospital_remitter = 'Remitter is required';
     }
@@ -74,14 +79,27 @@ const AddHospital = () => {
 
     setLoading(true);
     try {
-      await axios.post('http://localhost:8000/api/addhospital', formData, {
+      // Keep original API endpoint that matches Laravel route
+      const response = await axios.post('http://localhost:8000/api/addhospital', formData, {
         headers: {
-          Authorization: `Bearer ${authToken}`
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json" // Add content-type header
         }
       });
+
+      console.log(response);
       navigate('/manage-hospitals');
     } catch (error) {
-      setErrors(error.response?.data?.errors || { general: 'Submission failed' });
+      console.log(error);
+      // Enhanced error handling
+      if (error.response?.data?.errors) {
+        setErrors({ 
+          ...error.response.data.errors,
+          general: 'Please fix the highlighted errors' 
+        });
+      } else {
+        setErrors({ general: 'Submission failed. Please try again.' });
+      }
     } finally {
       setLoading(false);
     }
@@ -108,7 +126,7 @@ const AddHospital = () => {
                 <div className="text-red-500 text-center mb-4">{errors.general}</div>
               )}
 
-              {/* Hospital ID */}
+              {/* Hospital ID Field */}
               <div>
                 <label className="block text-sm font-medium text-green-900 mb-1">
                   Hospital ID (XXX-123456)
@@ -127,7 +145,7 @@ const AddHospital = () => {
                 )}
               </div>
 
-              {/* Hospital Name */}
+              {/* Hospital Name Field */}
               <div>
                 <label className="block text-sm font-medium text-green-900 mb-1">
                   Hospital Name
@@ -145,22 +163,22 @@ const AddHospital = () => {
                 )}
               </div>
 
-              {/* Formation and Phone Number Row */}
+              {/* Military Division and Phone Number Row */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-green-900 mb-1">
                     Military Formation
                   </label>
                   <input
-                    name="hospital_formation"
-                    value={formData.hospital_formation}
+                    name="military_division"
+                    value={formData.military_division}
                     onChange={handleChange}
                     className={`w-full px-3 py-2 border rounded-md ${
-                      errors.hospital_formation ? 'border-red-500' : 'border-gray-300'
+                      errors.military_division ? 'border-red-500' : 'border-gray-300'
                     } focus:ring-yellow-400 focus:border-yellow-400`}
                   />
-                  {errors.hospital_formation && (
-                    <p className="text-red-500 text-sm mt-1">{errors.hospital_formation}</p>
+                  {errors.military_division && (
+                    <p className="text-red-500 text-sm mt-1">{errors.military_division}</p>
                   )}
                 </div>
 
@@ -182,7 +200,7 @@ const AddHospital = () => {
                 </div>
               </div>
 
-              {/* Address */}
+              {/* Address Field */}
               <div>
                 <label className="block text-sm font-medium text-green-900 mb-1">
                   Full Address
@@ -201,13 +219,13 @@ const AddHospital = () => {
                 )}
               </div>
 
-              {/* Remitter Selection */}
+              {/* Remitter Selection Field */}
               <div>
                 <label className="block text-sm font-medium text-green-900 mb-1">
                   Assign Remitter
                 </label>
                 <select
-                  name="hospital_remitter"
+                  name="hospital_remitter" // Match backend field name
                   value={formData.hospital_remitter}
                   onChange={handleChange}
                   className={`w-full px-3 py-2 border rounded-md ${
@@ -226,6 +244,7 @@ const AddHospital = () => {
                 )}
               </div>
 
+              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}

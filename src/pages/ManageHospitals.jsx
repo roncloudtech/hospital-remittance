@@ -25,7 +25,7 @@ const ManageHospitals = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "http://localhost:8000/api/hospitals",
+          "http://localhost:8000/api/gethospitals",
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -91,10 +91,10 @@ const ManageHospitals = () => {
                       {hospitals.map((hospital) => (
                         <tr key={hospital.id}>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {hospital.name}
+                            {hospital.hospital_name}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {hospital.location}
+                            {hospital.address}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm">
                             <button className="text-yellow-600 hover:text-yellow-900 mr-4">
