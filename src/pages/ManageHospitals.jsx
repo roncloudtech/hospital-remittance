@@ -83,6 +83,9 @@ const ManageHospitals = () => {
                           Location
                         </th>
                         <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-green-900 uppercase tracking-wider">
+                          Miltary Formation
+                        </th>
+                        <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-green-900 uppercase tracking-wider">
                           Actions
                         </th>
                       </tr>
@@ -95,6 +98,9 @@ const ManageHospitals = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {hospital.address}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {hospital.military_division}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm">
                             <button className="text-yellow-600 hover:text-yellow-900 mr-4">

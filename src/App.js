@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, Navigate, Outlet } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate, Outlet} from "react-router-dom";
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
@@ -7,7 +7,7 @@ import Dashboard from "./pages/Dashboard";
 import AdminRoute from "./components/AdminRoute";
 import UserRoute from "./components/UserRoute";
 import ManageHospitals from "./pages/ManageHospitals";
-// import RemitFund from "./pages/RemitFund";
+import RemitFund from "./pages/RemitFund";
 import Unauthorized from "./pages/Unauthorized";
 import AddHospital from "./pages/AddHospital";
 import ManageUsers from "./pages/ManageUsers";
@@ -22,6 +22,8 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
+        <Route path="/admin/unauthorized" element={<Unauthorized />} />
+        <Route path="/user/unauthorized" element={<Unauthorized />} />
 
         {/* Protected common routes */}
         <Route element={<ProtectedLayout />}>
@@ -31,6 +33,7 @@ function App() {
         {/* Admin-only routes */}
         <Route element={<AdminRoute />}>
           {/* <Route path="/register" element={<Register />} /> */}
+          {/* <Route path="/admin/dashboard" element={<Dashboard />} /> */}
           <Route path="/manage-users" element={<ManageUsers />}/>
           <Route path="/add-hospital" element={<AddHospital/>} />
           <Route path="/manage-hospitals" element={<ManageHospitals />} />
@@ -39,7 +42,8 @@ function App() {
 
         {/* Remitter-only routes */}
         <Route element={<UserRoute />}>
-          {/* <Route path="/remit-fund" element={<RemitFund />} /> */}
+          {/* <Route path="/user/dashboard" element={<Dashboard />} /> */}
+          <Route path="/remit-fund" element={<RemitFund />} />
         </Route>
 
         {/* Catch-all for invalid routes */}

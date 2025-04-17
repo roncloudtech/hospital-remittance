@@ -9,7 +9,7 @@ const UserRoute = () => {
   }
 
   if (user?.role !== 'remitter') {
-    return <Navigate to="/unauthorized" replace />;
+    return <Navigate to="/user/unauthorized" replace />;
   }
 
   return <Outlet />;

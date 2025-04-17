@@ -74,6 +74,7 @@ const Register = () => {
         navigate("/login");
       }
     } catch (error) {
+      console.log(error);
       if (error.response?.data?.errors) {
         setErrors(error.response.data.errors);
       } else {
@@ -81,6 +82,7 @@ const Register = () => {
       }
     } finally {
       setLoading(false);
+      // console.log(response);
     }
   };
 

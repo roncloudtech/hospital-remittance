@@ -157,6 +157,23 @@ export default function DashboardSideBar() {
           {/* Remitter Links */}
           {user?.role === "remitter" && (
             <>
+              {/* <NavLink
+            to="/user/dashboard"
+            onClick={closeMobileMenu}
+            className={({ isActive }) =>
+              `flex items-center px-4 py-3 text-sm font-medium ${
+                isActive
+                  ? "bg-green-800 text-yellow-400"
+                  : "text-gray-300 hover:bg-green-800"
+              } ${isCollapsed && !isMobileView ? "justify-center" : "px-6"}`
+            }
+          >
+            <ChartBarIcon className="h-5 w-5" />
+            {(!isCollapsed || isMobileView) && (
+              <span className="ml-3">Overview</span>
+            )}
+          </NavLink> */}
+
               <NavLink
                 to="/remit-fund"
                 className={({ isActive }) =>

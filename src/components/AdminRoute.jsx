@@ -1,5 +1,5 @@
-import { Navigate, Outlet } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';
+import { Navigate, Outlet } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const AdminRoute = () => {
   const { authToken, user } = useAuth();
@@ -8,8 +8,8 @@ const AdminRoute = () => {
     return <Navigate to="/login" replace />;
   }
 
-  if (user?.role !== 'admin') {
-    return <Navigate to="/unauthorized" replace />;
+  if (user?.role !== "admin") {
+    return <Navigate to="/admin/unauthorized" replace />;
   }
 
   return <Outlet />;
