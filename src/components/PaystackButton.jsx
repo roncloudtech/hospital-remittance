@@ -16,6 +16,7 @@ const PaystackButton = ({ amt, hospital, email, onSuccess, onClose, refCode }) =
       amount: amt * 100,
       currency: "NGN",
       ref: refCode, //ref,
+      // ref: refCode, //ref,
       metadata: {
         hospital_id: hospital
       },

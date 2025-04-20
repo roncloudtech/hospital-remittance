@@ -10,7 +10,7 @@ const RemitFund = () => {
   const { authToken, user } = useAuth();
   const navigate = useNavigate();
   const [hospitals, setHospitals] = useState([]);
-  const uniqueRef = `ref_${Date.now()}`;
+  const uniqueRef = `PAYSTACK_${Date.now()}`;
   const [formData, setFormData] = useState({
     hospital_id: "",
     amount: "",
@@ -137,7 +137,8 @@ const RemitFund = () => {
             amount: parseFloat(formData.amount),
             remitter_id: user.id,
             payment_status: "pending",
-            payment_reference: uniqueRef, //`BANK-${Date.now()}`,
+            // payment_reference: uniqueRef, //`BANK-${Date.now()}`,
+            payment_reference: `BANK-${Date.now()}`,
           };
     
           await axios.post("http://localhost:8000/api/remittances", payload, {
