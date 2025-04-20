@@ -4,7 +4,6 @@ import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import DashboardSideBar from "../components/DashboardSideBar";
 import DashboardHeader from "../components/DashboardHeader";
-import PaystackButton from "../components/PaystackButton";
 
 const RemitFund = () => {
   const { authToken, user } = useAuth();
@@ -14,8 +13,6 @@ const RemitFund = () => {
     hospital_id: "",
     amount: "",
     description: "",
-    payment_method: "",
-    ref: "ref_" + Math.floor(Math.random() * 1000000000 + 1),
     transaction_date: new Date().toISOString().split("T")[0],
   });
   const [loading, setLoading] = useState(false);
@@ -25,6 +22,26 @@ const RemitFund = () => {
     if (user?.role !== "remitter") {
       navigate("/unauthorized");
     }
+
+    // const fetchHospitals = async () => {
+    //   try {
+    //     const response = await axios.post(
+    //       "http://localhost:8000/api/fetchremitterhospitals",
+    //       {
+    //         hospital_remitter: user?.id
+    //       },
+    //       {
+    //         headers: {
+    //           Authorization: `Bearer ${authToken}`,
+    //         },
+    //       }
+    //     );
+    //     console.log(response.data)
+    //     setHospitals(response.data);
+    //   } catch (error) {
+    //     console.error("Error fetching hospitals:", error);
+    //   }
+    // };
 
     const fetchHospitals = async () => {
       try {
@@ -57,10 +74,6 @@ const RemitFund = () => {
 
     if (!formData.hospital_id) {
       newErrors.hospital_id = "Hospital selection is required";
-    }
-
-    if (!formData.payment_method) {
-      newErrors.payment_method = "Payment method selection is required";
     }
 
     if (
@@ -130,101 +143,78 @@ const RemitFund = () => {
                 </div>
               )}
 
-              {/* Hospital Selection & Payment Selection */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Hospital Selection */}
+              {/* Hospital Selection */}
+              <div>
+                <label className="block text-sm font-medium text-green-900 mb-1">
+                  Select Hospital
+                </label>
 
-                <div>
-                  <label className="block text-sm font-medium text-green-900 mb-1">
-                    Select Hospital
-                  </label>
-
-                  {loading ? (
-                    <div className="animate-pulse flex space-x-4">
-                      <div className="flex-1 space-y-4 py-1">
-                        <div className="h-10 bg-gray-200 rounded"></div>
-                      </div>
+                {loading ? (
+                  <div className="animate-pulse flex space-x-4">
+                    <div className="flex-1 space-y-4 py-1">
+                      <div className="h-10 bg-gray-200 rounded"></div>
                     </div>
-                  ) : (
-                    <>
-                      <select
-                        name="hospital_id"
-                        value={formData.hospital_id}
-                        onChange={handleChange}
-                        className={`w-full px-3 py-2 border rounded-md ${
-                          errors.hospital_id
-                            ? "border-red-500"
-                            : "border-gray-300"
-                        } focus:ring-yellow-400 focus:border-yellow-400`}
-                        disabled={hospitals.length === 0}
-                      >
-                        <option value="">Select Hospital</option>
-                        {hospitals.map((hospital) => (
-                          <option key={hospital.id} value={hospital.id}>
-                            {hospital.hospital_name} ({hospital.hospital_id})
-                          </option>
-                        ))}
-                      </select>
+                  </div>
+                ) : (
+                  <>
+                    <select
+                      name="hospital_id"
+                      value={formData.hospital_id}
+                      onChange={handleChange}
+                      className={`w-full px-3 py-2 border rounded-md ${
+                        errors.hospital_id
+                          ? "border-red-500"
+                          : "border-gray-300"
+                      } focus:ring-yellow-400 focus:border-yellow-400`}
+                      disabled={hospitals.length === 0}
+                    >
+                      <option value="">Select Hospital</option>
+                      {hospitals.map((hospital) => (
+                        <option key={hospital.id} value={hospital.id}>
+                          {hospital.hospital_name} ({hospital.hospital_id})
+                        </option>
+                      ))}
+                    </select>
 
-                      {!loading && hospitals.length === 0 && (
-                        <p className="text-gray-500 text-sm mt-2">
-                          No hospitals assigned to your account
-                        </p>
-                      )}
-                    </>
-                  )}
+                    {!loading && hospitals.length === 0 && (
+                      <p className="text-gray-500 text-sm mt-2">
+                        No hospitals assigned to your account
+                      </p>
+                    )}
+                  </>
+                )}
 
-                  {errors.hospital_id && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.hospital_id}
-                    </p>
-                  )}
-                </div>
-
-                {/* Payment Selection */}
-                <div>
-                  <label className="block text-sm font-medium text-green-900 mb-1">
-                    Select Payment Method
-                  </label>
-
-                  {loading ? (
-                    <div className="animate-pulse flex space-x-4">
-                      <div className="flex-1 space-y-4 py-1">
-                        <div className="h-10 bg-gray-200 rounded"></div>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <select
-                        name="payment_method"
-                        value={formData.payment_method}
-                        onChange={handleChange}
-                        className={`w-full px-3 py-2 border rounded-md ${
-                          errors.payment_method
-                            ? "border-red-500"
-                            : "border-gray-300"
-                        } focus:ring-yellow-400 focus:border-yellow-400`}
-                      >
-                        <option value="">Select Payment</option>
-                        <option value="Paystack">Paystack</option>
-                        <option value="Bank Deposit">Bank Deposit</option>
-                      </select>
-
-                      {!loading && errors.payment_method && (
-                        <p className="text-gray-500 text-sm mt-2">
-                          No Payment Method Selected
-                        </p>
-                      )}
-                    </>
-                  )}
-
-                  {errors.payment_method && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.payment_method}
-                    </p>
-                  )}
-                </div>
+                {errors.hospital_id && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.hospital_id}
+                  </p>
+                )}
               </div>
+              {/* <div>
+                <label className="block text-sm font-medium text-green-900 mb-1">
+                  Select Hospital
+                </label>
+                <select
+                  name="hospital_id"
+                  value={formData.hospital_id}
+                  onChange={handleChange}
+                  className={`w-full px-3 py-2 border rounded-md ${
+                    errors.hospital_id ? "border-red-500" : "border-gray-300"
+                  } focus:ring-yellow-400 focus:border-yellow-400`}
+                >
+                  <option value="">Select Hospital</option>
+                  {hospitals.map((hospital) => (
+                    <option key={hospital.id} value={hospital.id}>
+                      {hospital.hospital_name} ({hospital.hospital_id})
+                    </option>
+                  ))}
+                </select>
+                {errors.hospital_id && (
+                  <p className="text-red-500 text-sm mt-1">
+                    {errors.hospital_id}
+                  </p>
+                )}
+              </div> */}
 
               {/* Amount and Date Row */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -277,19 +267,15 @@ const RemitFund = () => {
                 />
               </div>
 
-              {formData.payment_method === "Paystack" ? (
-                <PaystackButton  amt={formData.amount} hospital={formData.hospital_id} email={user?.email} ref={formData.ref}/>
-              ) : (
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className={`w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white ${
-                    loading ? "bg-gray-400" : "bg-green-900 hover:bg-green-800"
-                  } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400`}
-                >
-                  {loading ? "Processing Remittance..." : "Submit Remittance"}
-                </button>
-              )}
+              <button
+                type="submit"
+                disabled={loading}
+                className={`w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white ${
+                  loading ? "bg-gray-400" : "bg-green-900 hover:bg-green-800"
+                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400`}
+              >
+                {loading ? "Processing Remittance..." : "Submit Remittance"}
+              </button>
             </form>
           </div>
         </main>
