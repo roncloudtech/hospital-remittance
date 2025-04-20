@@ -10,12 +10,13 @@ const RemitFund = () => {
   const { authToken, user } = useAuth();
   const navigate = useNavigate();
   const [hospitals, setHospitals] = useState([]);
+  const uniqueRef = `ref_${Date.now()}`;
   const [formData, setFormData] = useState({
     hospital_id: "",
     amount: "",
     description: "",
     payment_method: "",
-    ref: "ref_" + Math.floor(Math.random() * 1000000000 + 1),
+    ref: uniqueRef, // "ref_" + Math.floor(Math.random() * 1000000000 + 1),
     transaction_date: new Date().toISOString().split("T")[0],
   });
   const [loading, setLoading] = useState(false);
@@ -75,35 +76,6 @@ const RemitFund = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-
-    setLoading(true);
-    try {
-      await axios.post(
-        "http://localhost:8000/api/remittances",
-        {
-          ...formData,
-          amount: parseFloat(formData.amount),
-          remitter_id: user.id,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${authToken}`,
-          },
-        }
-      );
-      navigate("/transactions");
-    } catch (error) {
-      setErrors(
-        error.response?.data?.errors || { general: "Submission failed" }
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handleChange = (e) => {
     setFormData({
       ...formData,
@@ -111,13 +83,86 @@ const RemitFund = () => {
     });
   };
 
+  // ✅ Merged: Handle Paystack Success
+  const [paystackSubmitted, setPaystackSubmitted] = useState(false);
+
+  const handlePaystackSuccess = async (response) => {
+    if (paystackSubmitted) return;
+    setPaystackSubmitted(true);
+
+    try {
+      setLoading(true);
+      const res = await axios.post(
+        "http://localhost:8000/api/remittances",
+        {
+          ...formData,
+          amount: parseFloat(formData.amount),
+          remitter_id: user.id,
+          payment_status: "success",
+          payment_reference: response.reference,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+
+      if (res.data.success) {
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error("Payment verification failed:", error);
+      setErrors({
+        general: error.response?.data?.message || "Payment verification failed",
+      });
+      setPaystackSubmitted(false); // allow retry
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Bank Deposit Form Submission
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    if(formData.payment_method === "Paystack") {
+      return;
+    } else {
+        setLoading(true);
+        try {
+          const payload = {
+            ...formData,
+            amount: parseFloat(formData.amount),
+            remitter_id: user.id,
+            payment_status: "pending",
+            payment_reference: uniqueRef, //`BANK-${Date.now()}`,
+          };
+    
+          await axios.post("http://localhost:8000/api/remittances", payload, {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+            },
+          });
+    
+          navigate("/dashboard");
+        } catch (error) {
+          setErrors(
+            error.response?.data?.errors || { general: "Submission failed" }
+          );
+        } finally {
+          setLoading(false);
+        }
+      };
+    }
+
+
   return (
     <div className="min-h-screen bg-gray-50">
       <DashboardSideBar />
-
       <div className="md:ml-64">
         <DashboardHeader PageTitle="Remit Funds" />
-
         <main className="p-6">
           <div className="bg-white rounded-lg shadow-sm border border-green-100 p-6">
             <form
@@ -130,50 +175,28 @@ const RemitFund = () => {
                 </div>
               )}
 
-              {/* Hospital Selection & Payment Selection */}
+              {/* Hospital and Payment Method Selection */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Hospital Selection */}
-
                 <div>
                   <label className="block text-sm font-medium text-green-900 mb-1">
                     Select Hospital
                   </label>
-
-                  {loading ? (
-                    <div className="animate-pulse flex space-x-4">
-                      <div className="flex-1 space-y-4 py-1">
-                        <div className="h-10 bg-gray-200 rounded"></div>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <select
-                        name="hospital_id"
-                        value={formData.hospital_id}
-                        onChange={handleChange}
-                        className={`w-full px-3 py-2 border rounded-md ${
-                          errors.hospital_id
-                            ? "border-red-500"
-                            : "border-gray-300"
-                        } focus:ring-yellow-400 focus:border-yellow-400`}
-                        disabled={hospitals.length === 0}
-                      >
-                        <option value="">Select Hospital</option>
-                        {hospitals.map((hospital) => (
-                          <option key={hospital.id} value={hospital.id}>
-                            {hospital.hospital_name} ({hospital.hospital_id})
-                          </option>
-                        ))}
-                      </select>
-
-                      {!loading && hospitals.length === 0 && (
-                        <p className="text-gray-500 text-sm mt-2">
-                          No hospitals assigned to your account
-                        </p>
-                      )}
-                    </>
-                  )}
-
+                  <select
+                    name="hospital_id"
+                    value={formData.hospital_id}
+                    onChange={handleChange}
+                    className={`w-full px-3 py-2 border rounded-md ${
+                      errors.hospital_id ? "border-red-500" : "border-gray-300"
+                    } focus:ring-yellow-400 focus:border-yellow-400`}
+                    disabled={hospitals.length === 0}
+                  >
+                    <option value="">Select Hospital</option>
+                    {hospitals.map((hospital) => (
+                      <option key={hospital.id} value={hospital.id}>
+                        {hospital.hospital_name} ({hospital.hospital_id})
+                      </option>
+                    ))}
+                  </select>
                   {errors.hospital_id && (
                     <p className="text-red-500 text-sm mt-1">
                       {errors.hospital_id}
@@ -181,43 +204,24 @@ const RemitFund = () => {
                   )}
                 </div>
 
-                {/* Payment Selection */}
                 <div>
                   <label className="block text-sm font-medium text-green-900 mb-1">
                     Select Payment Method
                   </label>
-
-                  {loading ? (
-                    <div className="animate-pulse flex space-x-4">
-                      <div className="flex-1 space-y-4 py-1">
-                        <div className="h-10 bg-gray-200 rounded"></div>
-                      </div>
-                    </div>
-                  ) : (
-                    <>
-                      <select
-                        name="payment_method"
-                        value={formData.payment_method}
-                        onChange={handleChange}
-                        className={`w-full px-3 py-2 border rounded-md ${
-                          errors.payment_method
-                            ? "border-red-500"
-                            : "border-gray-300"
-                        } focus:ring-yellow-400 focus:border-yellow-400`}
-                      >
-                        <option value="">Select Payment</option>
-                        <option value="Paystack">Paystack</option>
-                        <option value="Bank Deposit">Bank Deposit</option>
-                      </select>
-
-                      {!loading && errors.payment_method && (
-                        <p className="text-gray-500 text-sm mt-2">
-                          No Payment Method Selected
-                        </p>
-                      )}
-                    </>
-                  )}
-
+                  <select
+                    name="payment_method"
+                    value={formData.payment_method}
+                    onChange={handleChange}
+                    className={`w-full px-3 py-2 border rounded-md ${
+                      errors.payment_method
+                        ? "border-red-500"
+                        : "border-gray-300"
+                    } focus:ring-yellow-400 focus:border-yellow-400`}
+                  >
+                    <option value="">Select Payment</option>
+                    <option value="Paystack">Paystack</option>
+                    <option value="Bank Deposit">Bank Deposit</option>
+                  </select>
                   {errors.payment_method && (
                     <p className="text-red-500 text-sm mt-1">
                       {errors.payment_method}
@@ -226,7 +230,7 @@ const RemitFund = () => {
                 </div>
               </div>
 
-              {/* Amount and Date Row */}
+              {/* Amount and Date */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-green-900 mb-1">
@@ -277,11 +281,27 @@ const RemitFund = () => {
                 />
               </div>
 
+              {/* Submit or Paystack Button */}
               {formData.payment_method === "Paystack" ? (
-                <PaystackButton  amt={formData.amount} hospital={formData.hospital_id} email={user?.email} ref={formData.ref}/>
+                // <PaystackButton
+                //   amt={formData.amount}
+                //   hospital={formData.hospital_id}
+                //   email={user?.email}
+                //   onSuccess={handlePaystackSuccess}
+                //   onClose={() => setLoading(false)}
+                // />
+                <PaystackButton
+                  amt={formData.amount}
+                  hospital={formData.hospital_id}
+                  email={user?.email}
+                  onSuccess={handlePaystackSuccess}
+                  onClose={() => setLoading(false)}
+                  refCode={formData.ref}
+                />
               ) : (
                 <button
                   type="submit"
+                  // onClick={handleSubmit}
                   disabled={loading}
                   className={`w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-white ${
                     loading ? "bg-gray-400" : "bg-green-900 hover:bg-green-800"
