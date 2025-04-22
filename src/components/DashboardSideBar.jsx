@@ -10,6 +10,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   Bars3Icon,
+  ArrowLeftOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import { useAuth } from "../context/AuthContext";
 
@@ -153,7 +154,6 @@ export default function DashboardSideBar() {
               </NavLink>
             </>
           )}
-
           {/* Remitter Links */}
           {user?.role === "remitter" && (
             <>
@@ -203,7 +203,6 @@ export default function DashboardSideBar() {
               </NavLink>
             </>
           )}
-
           {/* Common Reports Link */}
           <NavLink
             to="/reports"
@@ -218,6 +217,41 @@ export default function DashboardSideBar() {
             <ShieldCheckIcon className="h-5 w-5" />
             {!isCollapsed && <span className="ml-3">Reports</span>}
           </NavLink>
+          {/* Logout Link */}
+          <NavLink
+            to="/logout"
+            className={({ isActive }) =>
+              `flex items-center px-4 py-3 text-sm font-medium ${
+                isActive
+                  ? "bg-green-800 text-yellow-400"
+                  : "text-gray-300 hover:bg-green-800"
+              } ${isCollapsed ? "justify-center" : "px-6"}`
+            }
+          >
+            <ArrowLeftOnRectangleIcon className="h-5 w-5" />
+            {!isCollapsed && <span className="ml-3">Logout</span>}
+          </NavLink>
+          {/* Logout Link */}
+          {/* <NavLink
+            to="/logout"
+            className="flex items-center px-4 py-3 text-sm font-medium text-gray-300 hover:bg-green-800 mt-auto"
+          >
+            <svg
+              className="h-5 w-5"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
+              />
+            </svg>
+            {!isCollapsed && <span className="ml-3">Log Out</span>}
+          </NavLink> */}
         </nav>
       </div>
 

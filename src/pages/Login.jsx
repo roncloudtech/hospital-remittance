@@ -59,14 +59,6 @@ const Login = () => {
         login(token, user);
 
         navigate("/dashboard");
-
-        // if (user.role === "remitter") {
-        //   // Redirect to dashboard
-        //   navigate("/user/dashboard");
-        // } else {
-        //   // Redirect to dashboard
-        //   navigate("/admin/dashboard");
-        // }
       }
     } catch (error) {
       let errorMessage = "Login failed. Please try again.";
@@ -82,8 +74,6 @@ const Login = () => {
       setLoading(false);
     }
   };
-
-  // const handleSubmit = async (e) => {
   //   e.preventDefault();
   //   if (!validateForm()) return;
 

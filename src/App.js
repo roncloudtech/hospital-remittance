@@ -11,6 +11,7 @@ import RemitFund from "./pages/RemitFund";
 import Unauthorized from "./pages/Unauthorized";
 import AddHospital from "./pages/AddHospital";
 import ManageUsers from "./pages/ManageUsers";
+import Logout from "./pages/Logout";
 
 // Main application component
 function App() {
@@ -21,6 +22,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/logout" element={<Logout/>} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/admin/unauthorized" element={<Unauthorized />} />
         <Route path="/user/unauthorized" element={<Unauthorized />} />
