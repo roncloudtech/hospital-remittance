@@ -15,7 +15,7 @@ const Dashboard = () => {
       try {
         const endpoint =
           user?.role === 'admin'
-            ? 'http://localhost:8000/api/getremittances'
+            ? 'http://localhost:8000/api/allremittances'
             : 'http://localhost:8000/api/getremittances';
 
         const res = await axios.get(endpoint, {
