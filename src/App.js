@@ -12,6 +12,8 @@ import Unauthorized from "./pages/Unauthorized";
 import AddHospital from "./pages/AddHospital";
 import ManageUsers from "./pages/ManageUsers";
 import Logout from "./pages/Logout";
+import PendingApprovals from "./pages/PendingApprovals";
+import Transactions from "./pages/Transactions";
 
 // Main application component
 function App() {
@@ -30,12 +32,13 @@ function App() {
         {/* Protected common routes */}
         <Route element={<ProtectedLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/transactions" element={<Transactions />} />
         </Route>
 
         {/* Admin-only routes */}
         <Route element={<AdminRoute />}>
           {/* <Route path="/register" element={<Register />} /> */}
-          {/* <Route path="/admin/dashboard" element={<Dashboard />} /> */}
+          <Route path="/pending-approvals" element={<PendingApprovals/>} />
           <Route path="/manage-users" element={<ManageUsers />}/>
           <Route path="/add-hospital" element={<AddHospital/>} />
           <Route path="/manage-hospitals" element={<ManageHospitals />} />
