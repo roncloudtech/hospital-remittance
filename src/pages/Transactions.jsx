@@ -90,9 +90,13 @@ const Transactions = () => {
       Reference: tx.payment_reference,
     }));
 
-    const csv = Papa.unparse(data);
-    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-    saveAs(blob, "transactions.csv");
+    if (data.length > 0) {
+      const csv = Papa.unparse(data);
+      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+      saveAs(blob, "transaction_" + Date.now() + ".csv");
+    } else {
+      alert("No record found");
+    }
   };
 
   return (
@@ -133,9 +137,7 @@ const Transactions = () => {
             <div className="flex gap-2 items-center">
               <DatePicker
                 selected={filters.startDate}
-                onChange={(date) =>
-                  setFilters({ ...filters, startDate: date })
-                }
+                onChange={(date) => setFilters({ ...filters, startDate: date })}
                 selectsStart
                 startDate={filters.startDate}
                 endDate={filters.endDate}
@@ -144,9 +146,7 @@ const Transactions = () => {
               />
               <DatePicker
                 selected={filters.endDate}
-                onChange={(date) =>
-                  setFilters({ ...filters, endDate: date })
-                }
+                onChange={(date) => setFilters({ ...filters, endDate: date })}
                 selectsEnd
                 startDate={filters.startDate}
                 endDate={filters.endDate}
@@ -195,7 +195,9 @@ const Transactions = () => {
                           className={`px-2 py-1 text-sm rounded-full ${
                             tx.payment_status === "success"
                               ? "bg-green-100 text-green-800"
-                              : "bg-yellow-100 text-yellow-800"
+                              : tx.payment_status === "pending"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-red-100 text-red-500"
                           }`}
                         >
                           {tx.payment_status}
@@ -209,7 +211,9 @@ const Transactions = () => {
               {/* Pagination */}
               <div className="flex justify-between items-center mt-4">
                 <button
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  onClick={() =>
+                    setCurrentPage((prev) => Math.max(prev - 1, 1))
+                  }
                   disabled={currentPage === 1}
                   className="px-4 py-2 bg-green-900 text-white rounded disabled:bg-gray-300"
                 >
