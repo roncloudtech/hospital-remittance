@@ -30,7 +30,7 @@ const AddHospital = () => {
 
     const fetchRemitters = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/'}getusers`, {
+        const response = await axios.get(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000'}/getusers`, {
           headers: {
             Authorization: `Bearer ${authToken}`
           }
@@ -83,7 +83,7 @@ const AddHospital = () => {
     setLoading(true);
     try {
       // Keep original API endpoint that matches Laravel route
-      const response = await axios.post(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/'}addhospital`, formData, {
+      const response = await axios.post(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000'}/addhospital`, formData, {
         headers: {
           Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json" // Add content-type header

@@ -22,8 +22,8 @@ const Dashboard = () => {
       try {
         const endpoint =
           user?.role === "admin"
-            ? `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/'}allremittances`
-            : `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/'}getremittances`;
+            ? `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000'}/allremittances`
+            : `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000'}/getremittances`;
 
         const res = await axios.get(endpoint, {
           headers: {

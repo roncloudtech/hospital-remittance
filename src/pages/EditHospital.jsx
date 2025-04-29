@@ -31,7 +31,7 @@ const EditHospital = () => {
 
     const fetchHospital = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/'}hospitals/${id}`, {
+        const response = await axios.get(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000'}/hospitals/${id}`, {
           headers: { Authorization: `Bearer ${authToken}` }
         });
         setFormData({
@@ -45,7 +45,7 @@ const EditHospital = () => {
 
     const fetchRemitters = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/'}getusers`, {
+        const res = await axios.get(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000'}/getusers`, {
           headers: { Authorization: `Bearer ${authToken}` }
         });
         setRemitters(res.data);
@@ -83,7 +83,7 @@ const EditHospital = () => {
 
     setLoading(true);
     try {
-      await axios.put(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/'}hospitals/${id}`, formData, {
+      await axios.put(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000'}/hospitals/${id}`, formData, {
         headers: {
           Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json"
