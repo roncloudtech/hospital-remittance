@@ -13,7 +13,7 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
     const performLogout = async () => {
       try {
         await axios.post(
-          `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000'}/logout`,
+          `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/logout`,
           {},
           {
             headers: {
@@ -47,54 +47,3 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
 };
 
 export default Logout;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// import React, { useEffect } from 'react';
-// import { useNavigate } from 'react-router-dom';
-// import { useAuth } from '../context/AuthContext';
-
-// const Logout = () => {
-//   const { logout } = useAuth();
-//   const navigate = useNavigate();
-
-//   useEffect(() => {
-//     const performLogout = async () => {
-//       await logout();
-//       navigate("/login");
-//     };
-
-//     performLogout();
-//   }, [logout, navigate]);
-
-//   return (
-//     <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-//       <div className="text-center">
-//         <div className="animate-spin mb-4 inline-block">
-//           <svg className="w-12 h-12 text-green-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-//             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-//           </svg>
-//         </div>
-//         <p className="text-lg text-green-900">Logging out...</p>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Logout;

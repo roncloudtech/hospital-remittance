@@ -6,6 +6,8 @@ import axios from 'axios';
 import { Navigate } from 'react-router-dom';
 
 const PendingApprovals = () => {
+  // Base API URL
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const { user, authToken } = useAuth();
   const [pendingTransactions, setPendingTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,7 +17,7 @@ const PendingApprovals = () => {
     const fetchPending = async () => {
       setLoading(true);
       try {
-        const res = await axios.get('http://localhost:8000/api/allremittances', {
+        const res = await axios.get(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/allremittances`, {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
@@ -37,13 +39,13 @@ const PendingApprovals = () => {
     if (user?.role === 'admin') {
       fetchPending();
     }
-  }, [user, authToken]);
+  }, [user, authToken, API_BASE_URL]);
 
   const handleAction = async (id, action) => {
     setActionLoading(true);
     try {
       await axios.patch(
-        `http://localhost:8000/api/updateremittance/${id}/${action}`,
+        `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/updateremittance/${id}/${action}`,
         {}, // send empty body or data if not required
         {
           headers: {

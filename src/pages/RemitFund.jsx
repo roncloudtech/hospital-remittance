@@ -7,6 +7,8 @@ import DashboardHeader from "../components/DashboardHeader";
 import PaystackButton from "../components/PaystackButton";
 
 const RemitFund = () => {
+  // Base API URL
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const { authToken, user } = useAuth();
   const navigate = useNavigate();
   const [hospitals, setHospitals] = useState([]);
@@ -30,7 +32,7 @@ const RemitFund = () => {
     const fetchHospitals = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:8000/api/my-hospitals",
+          `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/my-hospitals`,
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -51,7 +53,7 @@ const RemitFund = () => {
       }
     };
     fetchHospitals();
-  }, [authToken, navigate, user]);
+  }, [authToken, navigate, user, API_BASE_URL]);
 
   const validateForm = () => {
     const newErrors = {};
@@ -93,7 +95,7 @@ const RemitFund = () => {
     try {
       setLoading(true);
       const res = await axios.post(
-        "http://localhost:8000/api/remittances",
+        `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/remittances`,
         {
           ...formData,
           amount: parseFloat(formData.amount),
@@ -141,7 +143,7 @@ const RemitFund = () => {
             payment_reference: `BANK-${Date.now()}`,
           };
     
-          await axios.post("http://localhost:8000/api/remittances", payload, {
+          await axios.post(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/remittances`, payload, {
             headers: {
               Authorization: `Bearer ${authToken}`,
             },
@@ -284,13 +286,6 @@ const RemitFund = () => {
 
               {/* Submit or Paystack Button */}
               {formData.payment_method === "Paystack" ? (
-                // <PaystackButton
-                //   amt={formData.amount}
-                //   hospital={formData.hospital_id}
-                //   email={user?.email}
-                //   onSuccess={handlePaystackSuccess}
-                //   onClose={() => setLoading(false)}
-                // />
                 <PaystackButton
                   amt={formData.amount}
                   hospital={formData.hospital_id}

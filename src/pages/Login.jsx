@@ -46,10 +46,10 @@ const Login = () => {
     try {
       // First get CSRF cookie
       // await axios.get(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000'}/sanctum/csrf-cookie`);
-      await axios.get(`${API_BASE_URL ? 'https://api.namm.com.ng' : 'http://localhost:8000'}/sanctum/csrf-cookie`);
+      await axios.get(`${API_BASE_URL ? 'https://api.namm.com.ng' : 'http://localhost:8000/api'}/sanctum/csrf-cookie`);
 
       // Then make login request
-      const response = await axios.post(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000'}/login`, {
+      const response = await axios.post(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/login`, {
         email: formData.email,
         password: formData.password,
       });

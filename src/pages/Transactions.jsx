@@ -9,6 +9,8 @@ import Papa from "papaparse";
 import { saveAs } from "file-saver";
 
 const Transactions = () => {
+  // Base API URL
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;  
   const { user, authToken } = useAuth();
   const [transactions, setTransactions] = useState([]);
   const [filtered, setFiltered] = useState([]);
@@ -23,8 +25,8 @@ const Transactions = () => {
   const itemsPerPage = 10;
   const endpoint =
     user?.role === "admin"
-      ? "http://localhost:8000/api/allremittances"
-      : "http://localhost:8000/api/getremittances";
+      ? `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/allremittances`
+      : `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/getremittances`;
 
   const [loading, setLoading] = useState(true);
 
@@ -46,7 +48,7 @@ const Transactions = () => {
     };
 
     fetchTransactions();
-  }, [endpoint, authToken]);
+  }, [endpoint, authToken, API_BASE_URL]);
 
   // Filtering
   useEffect(() => {

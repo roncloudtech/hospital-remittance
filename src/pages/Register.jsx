@@ -6,6 +6,8 @@ import DashboardHeader from "../components/DashboardHeader";
 // import { useAuth } from "../context/AuthContext";
 
 const Register = () => {
+  // Base API URL
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -61,7 +63,7 @@ const Register = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post("http://localhost:8000/api/register", {
+      const response = await axios.post(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/register`, {
         first_name: formData.firstName,
         last_name: formData.lastName,
         email: formData.email,
