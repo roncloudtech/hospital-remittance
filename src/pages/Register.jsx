@@ -74,7 +74,7 @@ const Register = () => {
       });
 
       if (response.status === 201) {
-        navigate("/login");
+        navigate("/manage-users");
       }
     } catch (error) {
       console.log(error);
