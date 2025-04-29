@@ -6,11 +6,11 @@ import DashboardSideBar from "../components/DashboardSideBar";
 import DashboardHeader from "../components/DashboardHeader";
 
 const ManageHospitals = () => {
+  // Base API URL
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const { authToken, user } = useAuth();
   const navigate = useNavigate();
   const [hospitals, setHospitals] = useState([]);
-//   const [hospitalName, setHospitalName] = useState("");
-//   const [hospitalLocation, setHospitalLocation] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -25,7 +25,7 @@ const ManageHospitals = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          "http://localhost:8000/api/gethospitals",
+          `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000'}/gethospitals`,
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -41,7 +41,7 @@ const ManageHospitals = () => {
     };
 
     fetchHospitals();
-  }, [authToken, navigate, user]);
+  }, [authToken, navigate, user, API_BASE_URL]);
 
   return (
     <div className="min-h-screen bg-gray-50">
