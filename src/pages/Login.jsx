@@ -6,6 +6,8 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 
 const Login = () => {
+  // Base API URL
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -43,10 +45,10 @@ const Login = () => {
     setLoading(true);
     try {
       // First get CSRF cookie
-      await axios.get("http://localhost:8000/sanctum/csrf-cookie");
+      await axios.get(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/'}sanctum/csrf-cookie`);
 
       // Then make login request
-      const response = await axios.post("http://localhost:8000/api/login", {
+      const response = await axios.post(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/'}login`, {
         email: formData.email,
         password: formData.password,
       });
@@ -74,40 +76,6 @@ const Login = () => {
       setLoading(false);
     }
   };
-  //   e.preventDefault();
-  //   if (!validateForm()) return;
-
-  //   setLoading(true);
-  //   try {
-  //     const response = await axios.post('http://localhost:8000/api/login', {
-  //       email: formData.email,
-  //       password: formData.password
-  //     });
-
-  //     if (response.status === 200) {
-  //       // Extract token from response
-  //       const token = response.data.token;
-
-  //       // Use context login method to update global state
-  //       login(token);
-
-  //       // Redirect to dashboard
-  //       navigate('/dashboard');
-  //     }
-  //   } catch (error) {
-  //     let errorMessage = 'Login failed. Please try again.';
-  //     if (error.response) {
-  //       if (error.response.status === 401) {
-  //         errorMessage = 'Invalid military credentials';
-  //       } else if (error.response.data?.message) {
-  //         errorMessage = error.response.data.message;
-  //       }
-  //     }
-  //     setErrors({ general: errorMessage });
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
 
   return (
     <>

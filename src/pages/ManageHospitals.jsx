@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import DashboardSideBar from "../components/DashboardSideBar";
@@ -103,9 +103,9 @@ const ManageHospitals = () => {
                             {hospital.military_division}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm">
-                            <button className="text-yellow-600 hover:text-yellow-900 mr-4">
+                            <NavLink to={`/edit-hospital?id=${hospital.id}`} className="text-yellow-600 hover:text-yellow-900 mr-4">
                               Edit
-                            </button>
+                            </NavLink>
                             <button className="text-red-600 hover:text-red-900">
                               Delete
                             </button>

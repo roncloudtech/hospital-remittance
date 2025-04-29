@@ -14,6 +14,7 @@ import ManageUsers from "./pages/ManageUsers";
 import Logout from "./pages/Logout";
 import PendingApprovals from "./pages/PendingApprovals";
 import Transactions from "./pages/Transactions";
+import EditHospital from "./pages/EditHospital";
 
 // Main application component
 function App() {
@@ -41,6 +42,7 @@ function App() {
           <Route path="/pending-approvals" element={<PendingApprovals/>} />
           <Route path="/manage-users" element={<ManageUsers />}/>
           <Route path="/add-hospital" element={<AddHospital/>} />
+          <Route path="/edit-hospital/" element={<EditHospital />} />
           <Route path="/manage-hospitals" element={<ManageHospitals />} />
           <Route path="/add-hospital" element={<AddHospital/>}/>
         </Route>

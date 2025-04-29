@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext"; // Auth context
 
 const Logout = () => {
+  // Base API URL
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const navigate = useNavigate();
   const { logout } = useAuth(); // Logout function from context
 
@@ -11,7 +13,7 @@ const Logout = () => {
     const performLogout = async () => {
       try {
         await axios.post(
-          "http://localhost:8000/api/logout",
+          `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/'}logout`,
           {},
           {
             headers: {
@@ -30,7 +32,7 @@ const Logout = () => {
     };
 
     performLogout();
-  }, [logout, navigate]);
+  }, [logout, navigate, API_BASE_URL]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50">

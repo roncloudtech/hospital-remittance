@@ -6,6 +6,8 @@ import axios from "axios";
 import { NavLink } from "react-router-dom";
 
 const Dashboard = () => {
+  // Base API URL
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const { user, authToken } = useAuth();
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -20,8 +22,8 @@ const Dashboard = () => {
       try {
         const endpoint =
           user?.role === "admin"
-            ? "http://localhost:8000/api/allremittances"
-            : "http://localhost:8000/api/getremittances";
+            ? `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/'}allremittances`
+            : `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/'}getremittances`;
 
         const res = await axios.get(endpoint, {
           headers: {
@@ -70,7 +72,7 @@ const Dashboard = () => {
     };
 
     fetchTransactions();
-  }, [user, authToken]);
+  }, [user, authToken, API_BASE_URL]);
 
   return (
     <div className="min-h-screen bg-gray-50">

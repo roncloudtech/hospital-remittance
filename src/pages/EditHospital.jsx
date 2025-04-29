@@ -1,16 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import axios from 'axios';
 import DashboardSideBar from '../components/DashboardSideBar';
 import DashboardHeader from '../components/DashboardHeader';
 
-const AddHospital = () => {
+const EditHospital = () => {
   // Base API URL
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-
   const { authToken, user } = useAuth();
   const navigate = useNavigate();
+  const { id } = useParams(); // Hospital ID from route
+
   const [remitters, setRemitters] = useState([]);
   const [formData, setFormData] = useState({
     hospital_id: '',
@@ -28,48 +29,48 @@ const AddHospital = () => {
       navigate('/unauthorized');
     }
 
-    const fetchRemitters = async () => {
+    const fetchHospital = async () => {
       try {
-        const response = await axios.get(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/'}getusers`, {
-          headers: {
-            Authorization: `Bearer ${authToken}`
-          }
+        const response = await axios.get(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/'}hospitals/${id}`, {
+          headers: { Authorization: `Bearer ${authToken}` }
         });
-        setRemitters(response.data);
-      } catch (error) {
-        console.error('Error fetching remitters:', error);
+        setFormData({
+          ...response.data,
+          hospital_remitter: response.data.hospital_remitter || ''
+        });
+      } catch (err) {
+        console.error('Error fetching hospital:', err);
       }
     };
 
+    const fetchRemitters = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/'}getusers`, {
+          headers: { Authorization: `Bearer ${authToken}` }
+        });
+        setRemitters(res.data);
+      } catch (err) {
+        console.error('Error fetching remitters:', err);
+      }
+    };
+
+    fetchHospital();
     fetchRemitters();
-  }, [authToken, navigate, user, API_BASE_URL]);
+  }, [authToken, id, navigate, user, API_BASE_URL]);
 
   const validateForm = () => {
     const newErrors = {};
     const idPattern = /^[A-Z]{3}-\d{6}$/;
-    
-    // Hospital ID validation
+
     if (!formData.hospital_id.match(idPattern)) {
       newErrors.hospital_id = 'Invalid ID format (XXX-123456)';
     }
-    
-    // Required field validations
-    if (!formData.hospital_name.trim()) {
-      newErrors.hospital_name = 'Hospital name is required';
-    }
-    if (!formData.military_division.trim()) {
-      newErrors.military_division = 'Formation is required';
-    }
-    if (!formData.address.trim()) {
-      newErrors.address = 'Address is required';
-    }
-    // Phone number validation
+
+    if (!formData.hospital_name.trim()) newErrors.hospital_name = 'Hospital name is required';
+    if (!formData.military_division.trim()) newErrors.military_division = 'Formation is required';
+    if (!formData.address.trim()) newErrors.address = 'Address is required';
     if (!/^\+234\d{10}$|^0\d{10}$/.test(formData.phone_number)) {
       newErrors.phone_number = 'Invalid Nigerian phone format (+234...)';
-    }
-    // Remitter validation (keep original field name)
-    if (!formData.hospital_remitter) {
-      newErrors.hospital_remitter = 'Remitter is required';
     }
 
     setErrors(newErrors);
@@ -82,23 +83,20 @@ const AddHospital = () => {
 
     setLoading(true);
     try {
-      // Keep original API endpoint that matches Laravel route
-      const response = await axios.post(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/'}addhospital`, formData, {
+      await axios.put(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/'}hospitals/${id}`, formData, {
         headers: {
           Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json" // Add content-type header
+          "Content-Type": "application/json"
         }
       });
 
-      console.log(response);
       navigate('/manage-hospitals');
     } catch (error) {
-      console.log(error);
-      // Enhanced error handling
+      console.error(error);
       if (error.response?.data?.errors) {
-        setErrors({ 
+        setErrors({
           ...error.response.data.errors,
-          general: 'Please fix the highlighted errors' 
+          general: 'Please fix the highlighted errors'
         });
       } else {
         setErrors({ general: 'Submission failed. Please try again.' });
@@ -118,10 +116,10 @@ const AddHospital = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <DashboardSideBar />
-      
+
       <div className="md:ml-64">
-        <DashboardHeader PageTitle="Register Military Hospital" />
-        
+        <DashboardHeader PageTitle="Edit Military Hospital" />
+
         <main className="p-6">
           <div className="bg-white rounded-lg shadow-sm border border-green-100 p-6">
             <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl mx-auto">
@@ -129,7 +127,6 @@ const AddHospital = () => {
                 <div className="text-red-500 text-center mb-4">{errors.general}</div>
               )}
 
-              {/* Hospital ID Field */}
               <div>
                 <label className="block text-sm font-medium text-green-900 mb-1">
                   Hospital ID (XXX-123456)
@@ -141,14 +138,10 @@ const AddHospital = () => {
                   className={`w-full px-3 py-2 border rounded-md ${
                     errors.hospital_id ? 'border-red-500' : 'border-gray-300'
                   } focus:ring-yellow-400 focus:border-yellow-400`}
-                  placeholder="ABC-123456"
                 />
-                {errors.hospital_id && (
-                  <p className="text-red-500 text-sm mt-1">{errors.hospital_id}</p>
-                )}
+                {errors.hospital_id && <p className="text-red-500 text-sm mt-1">{errors.hospital_id}</p>}
               </div>
 
-              {/* Hospital Name Field */}
               <div>
                 <label className="block text-sm font-medium text-green-900 mb-1">
                   Hospital Name
@@ -161,12 +154,9 @@ const AddHospital = () => {
                     errors.hospital_name ? 'border-red-500' : 'border-gray-300'
                   } focus:ring-yellow-400 focus:border-yellow-400`}
                 />
-                {errors.hospital_name && (
-                  <p className="text-red-500 text-sm mt-1">{errors.hospital_name}</p>
-                )}
+                {errors.hospital_name && <p className="text-red-500 text-sm mt-1">{errors.hospital_name}</p>}
               </div>
 
-              {/* Military Division and Phone Number Row */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-green-900 mb-1">
@@ -203,7 +193,6 @@ const AddHospital = () => {
                 </div>
               </div>
 
-              {/* Address Field */}
               <div>
                 <label className="block text-sm font-medium text-green-900 mb-1">
                   Full Address
@@ -217,18 +206,15 @@ const AddHospital = () => {
                   } focus:ring-yellow-400 focus:border-yellow-400`}
                   rows="3"
                 />
-                {errors.address && (
-                  <p className="text-red-500 text-sm mt-1">{errors.address}</p>
-                )}
+                {errors.address && <p className="text-red-500 text-sm mt-1">{errors.address}</p>}
               </div>
 
-              {/* Remitter Selection Field */}
               <div>
                 <label className="block text-sm font-medium text-green-900 mb-1">
                   Assign Remitter
                 </label>
                 <select
-                  name="hospital_remitter" // Match backend field name
+                  name="hospital_remitter"
                   value={formData.hospital_remitter}
                   onChange={handleChange}
                   className={`w-full px-3 py-2 border rounded-md ${
@@ -238,7 +224,7 @@ const AddHospital = () => {
                   <option value="">Select Remitter</option>
                   {remitters.map(remitter => (
                     <option key={remitter.id} value={remitter.id}>
-                     {remitter.role} |{remitter.firstname} {remitter.lastname} | {remitter.phone_number}
+                      {remitter.role} | {remitter.firstname} {remitter.lastname} | {remitter.phone_number}
                     </option>
                   ))}
                 </select>
@@ -247,7 +233,6 @@ const AddHospital = () => {
                 )}
               </div>
 
-              {/* Submit Button */}
               <button
                 type="submit"
                 disabled={loading}
@@ -255,7 +240,7 @@ const AddHospital = () => {
                   loading ? 'bg-gray-400' : 'bg-green-900 hover:bg-green-800'
                 } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400`}
               >
-                {loading ? 'Registering Hospital...' : 'Register Military Hospital'}
+                {loading ? 'Updating Hospital...' : 'Update Military Hospital'}
               </button>
             </form>
           </div>
@@ -265,4 +250,5 @@ const AddHospital = () => {
   );
 };
 
-export default AddHospital;
+export default EditHospital;
+  
