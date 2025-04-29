@@ -24,7 +24,7 @@ const ManageUsers = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000'}/api/getusers`,
+          `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/getusers`,
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
