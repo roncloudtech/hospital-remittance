@@ -8,7 +8,7 @@ import DashboardHeader from "../components/DashboardHeader";
 const Register = () => {
   // Base API URL
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-  console.log(API_BASE_URL)
+  // console.log(API_BASE_URL)
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
