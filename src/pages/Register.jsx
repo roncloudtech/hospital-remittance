@@ -8,7 +8,6 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 const Register = () => {
   // Base API URL
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-  // console.log(API_BASE_URL)
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -90,7 +89,6 @@ const Register = () => {
       }
     } finally {
       setLoading(false);
-      // console.log(response);
     }
   };
 
@@ -103,7 +101,7 @@ const Register = () => {
         <div className="max-w-7xl mx-auto">
           <div className="bg-white p-6 rounded-lg shadow-sm border border-green-100">
             <h2 className="text-lg font-medium text-green-900 mb-6">
-              Create New Military Healthcare Account
+              Create New Healthcare User Account
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-6">
@@ -218,15 +216,6 @@ const Register = () => {
                   <label className="block text-sm font-medium text-green-900 mb-2">
                     Password
                   </label>
-                  {/* <input
-                    name="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className={`w-full px-4 py-2 border rounded-lg ${
-                      errors.password ? "border-red-500" : "border-gray-300"
-                    } focus:ring-2 focus:ring-yellow-400 focus:border-transparent`}
-                  /> */}
                   <div className="relative">
                     <input
                       id="password"

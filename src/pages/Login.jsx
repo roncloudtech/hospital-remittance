@@ -77,7 +77,7 @@ const Login = () => {
       let errorMessage = "Login failed. Please try again.";
       if (error.response) {
         if (error.response.status === 401) {
-          errorMessage = "Invalid military credentials";
+          errorMessage = "Invalid login credentials";
         } else if (error.response.data?.message) {
           errorMessage = error.response.data.message;
         }
