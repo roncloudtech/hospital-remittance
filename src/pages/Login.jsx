@@ -4,6 +4,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext"; // Import the auth context
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 const Login = () => {
   // Base API URL
@@ -16,6 +17,8 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth(); // Get login method from context
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -46,13 +49,20 @@ const Login = () => {
     try {
       // First get CSRF cookie
       // await axios.get(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000'}/sanctum/csrf-cookie`);
-      await axios.get(`${API_BASE_URL ? 'https://api.namm.com.ng' : 'http://localhost:8000/api'}/sanctum/csrf-cookie`);
+      await axios.get(
+        `${
+          API_BASE_URL ? "https://api.namm.com.ng" : "http://localhost:8000"
+        }/sanctum/csrf-cookie`
+      );
 
       // Then make login request
-      const response = await axios.post(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/login`, {
-        email: formData.email,
-        password: formData.password,
-      });
+      const response = await axios.post(
+        `${API_BASE_URL ? API_BASE_URL : "http://localhost:8000/api"}/login`,
+        {
+          email: formData.email,
+          password: formData.password,
+        }
+      );
 
       if (response.status === 200) {
         // Extract both token and user from response
@@ -84,10 +94,10 @@ const Login = () => {
       <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-3xl font-bold text-green-900">
-          Nigerian Army Capitation Fund Remittance Login
+            Nigerian Army Capitation Fund Remittance Login
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-          Access your hospitals capitation Fund Management Account
+            Access your hospitals capitation Fund Management Account
           </p>
         </div>
 
@@ -130,18 +140,30 @@ const Login = () => {
                   Password
                 </label>
                 <div className="mt-1">
-                  <input
-                    id="password"
-                    name="password"
-                    type="password"
-                    value={formData.password}
-                    onChange={handleChange}
-                    className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 ${
-                      errors.password
-                        ? "border-red-500 focus:ring-red-500"
-                        : "border-gray-300 focus:ring-yellow-400"
-                    }`}
-                  />
+                  <div className="relative">
+                    <input
+                      id="password"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      value={formData.password}
+                      onChange={handleChange}
+                      className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 ${
+                        errors.password
+                          ? "border-red-500 focus:ring-red-500"
+                          : "border-gray-300 focus:ring-yellow-400"
+                      }`}
+                    />
+                    <span
+                      className="absolute right-3 top-3.5 text-gray-400 hover:text-blue-500 transition-colors cursor-pointer"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeSlashIcon className="h-4 w-5" />
+                      ) : (
+                        <EyeIcon className="h-4 w-5" />
+                      )}
+                    </span>
+                  </div>
                   {errors.password && (
                     <p className="mt-2 text-sm text-red-500">
                       {errors.password}

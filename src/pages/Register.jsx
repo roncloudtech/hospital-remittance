@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import DashboardSideBar from "../components/DashboardSideBar";
 import DashboardHeader from "../components/DashboardHeader";
-
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 
 const Register = () => {
   // Base API URL
@@ -20,6 +20,8 @@ const Register = () => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleChange = (e) => {
     setFormData({
@@ -64,14 +66,17 @@ const Register = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/register`, {
-        first_name: formData.firstName,
-        last_name: formData.lastName,
-        email: formData.email,
-        phone_number: formData.phoneNumber || null,
-        password: formData.password,
-        role: formData.role,
-      });
+      const response = await axios.post(
+        `${API_BASE_URL ? API_BASE_URL : "http://localhost:8000/api"}/register`,
+        {
+          first_name: formData.firstName,
+          last_name: formData.lastName,
+          email: formData.email,
+          phone_number: formData.phoneNumber || null,
+          password: formData.password,
+          role: formData.role,
+        }
+      );
 
       if (response.status === 201) {
         navigate("/manage-users");
@@ -213,7 +218,7 @@ const Register = () => {
                   <label className="block text-sm font-medium text-green-900 mb-2">
                     Password
                   </label>
-                  <input
+                  {/* <input
                     name="password"
                     type="password"
                     value={formData.password}
@@ -221,7 +226,31 @@ const Register = () => {
                     className={`w-full px-4 py-2 border rounded-lg ${
                       errors.password ? "border-red-500" : "border-gray-300"
                     } focus:ring-2 focus:ring-yellow-400 focus:border-transparent`}
-                  />
+                  /> */}
+                  <div className="relative">
+                    <input
+                      id="password"
+                      name="password"
+                      type={showPassword ? "text" : "password"}
+                      value={formData.password}
+                      onChange={handleChange}
+                      className={`appearance-none block w-full px-3 py-2 border rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-2 ${
+                        errors.password
+                          ? "border-red-500 focus:ring-red-500"
+                          : "border-gray-300 focus:ring-yellow-400"
+                      }`}
+                    />
+                    <span
+                      className="absolute right-3 top-3.5 text-gray-400 hover:text-blue-500 transition-colors cursor-pointer"
+                      onClick={() => setShowPassword(!showPassword)}
+                    >
+                      {showPassword ? (
+                        <EyeSlashIcon className="h-4 w-5" />
+                      ) : (
+                        <EyeIcon className="h-4 w-5" />
+                      )}
+                    </span>
+                  </div>
                   {errors.password && (
                     <p className="mt-1 text-sm text-red-500">
                       {errors.password}
