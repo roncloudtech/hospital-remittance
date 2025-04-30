@@ -19,10 +19,10 @@ export default function Footer() {
                 Contact
               </h3>
               <ul className="space-y-2 text-sm text-gray-300">
-                <li>Nigerian Army Headquarters Complex</li>
-                <li>Abuja, Nigeria</li>
-                <li>Email: healthservices@mod.gov.ng</li>
-                <li>Emergency: 0800-MIL-HELP</li>
+                <li>Command Finance Office, Arakan Cantonment,</li>
+                <li> PMB 1339, Apapa, Lagos Nigeria.</li>
+                <li>Email: hq.cfoapapa@army.mil.ng </li>
+                <li>Phone: 09075768788</li>
               </ul>
             </div>
             <div>
@@ -62,7 +62,7 @@ export default function Footer() {
               </h3>
               <div className="text-sm text-gray-300">
                 <p>ISO 27001 Certified</p>
-                <p>NDA Compliant</p>
+                <p>NA ICT Policy Complaint</p>
                 <p>Secure Military Network</p>
               </div>
             </div>
@@ -72,7 +72,7 @@ export default function Footer() {
               &copy; {new Date().getFullYear()} Nigerian Army Health
               Services. All rights reserved.
             </p>
-            <p className="mt-2">Patriotic in Service</p>
+            <p className="mt-2">NA Capitation Fund Remittance</p>
           </div>
         </div>
       </footer>
