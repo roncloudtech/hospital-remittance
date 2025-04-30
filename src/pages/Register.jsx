@@ -3,7 +3,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import DashboardSideBar from "../components/DashboardSideBar";
 import DashboardHeader from "../components/DashboardHeader";
-// import { useAuth } from "../context/AuthContext";
+
 
 const Register = () => {
   // Base API URL

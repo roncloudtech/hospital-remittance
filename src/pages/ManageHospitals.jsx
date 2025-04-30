@@ -83,7 +83,7 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
                           Location
                         </th>
                         <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-green-900 uppercase tracking-wider">
-                          Miltary Formation
+                          Formation
                         </th>
                         <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-green-900 uppercase tracking-wider">
                           Actions

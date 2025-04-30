@@ -170,7 +170,7 @@ const AddHospital = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <label className="block text-sm font-medium text-green-900 mb-1">
-                    Military Formation
+                    Formation
                   </label>
                   <input
                     name="military_division"

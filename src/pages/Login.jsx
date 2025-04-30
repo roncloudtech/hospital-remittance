@@ -84,10 +84,10 @@ const Login = () => {
       <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <h2 className="mt-6 text-center text-3xl font-bold text-green-900">
-            Defence Health Services Login
+          Nigerian Army Capitation Fund Remittance Login
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Access your military healthcare fund management account
+          Access your hospitals capitation Fund Management Account
           </p>
         </div>
 
@@ -100,7 +100,7 @@ const Login = () => {
                   htmlFor="email"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Military Email
+                  Email
                 </label>
                 <div className="mt-1">
                   <input

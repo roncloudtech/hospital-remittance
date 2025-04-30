@@ -30,7 +30,7 @@ const Header = () => {
               to="/hospitals"
               className="text-green-900 hover:text-yellow-400 px-3 py-2 text-sm font-medium"
             >
-              Military Hospitals
+              NA Hospitals
             </Link>
             <Link
               to="/services"
@@ -116,7 +116,7 @@ const Header = () => {
               to="/hospitals"
               className="block px-3 py-2 rounded-md text-base font-medium text-green-900 hover:text-yellow-400 hover:bg-gray-100"
             >
-              Military Hospitals
+              NA Hospitals
             </Link>
             <Link
               to="/services"
@@ -136,7 +136,7 @@ const Header = () => {
                   to="/login"
                   className="block px-3 py-2 rounded-md text-base font-medium text-green-900 hover:text-yellow-400 hover:bg-gray-100"
                 >
-                  Personnel Login
+                  Login
                 </Link>
                 <Link
                   to="/contact"

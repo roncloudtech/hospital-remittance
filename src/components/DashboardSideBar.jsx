@@ -94,7 +94,7 @@ export default function DashboardSideBar() {
                 isCollapsed && !isMobileView ? "text-center" : ""
               }`}
             >
-              {isCollapsed && !isMobileView ? "DHS" : "Defence Health Portal"}
+              {isCollapsed && !isMobileView ? "NAH" : "Nigerian Army Hospitals Portal"}
             </h2>
             {!isCollapsed && !isMobileView && (
               <p className="text-gray-300 text-sm mt-2">

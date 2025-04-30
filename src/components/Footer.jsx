@@ -8,7 +8,7 @@ export default function Footer() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <h3 className="text-lg font-bold mb-4 text-yellow-400">
-                Defence Health Services
+                Nigerian Army Health Services
               </h3>
               <p className="text-sm text-gray-300">
                 Ensuring optimal healthcare funding for Nigeria's armed forces
@@ -19,7 +19,7 @@ export default function Footer() {
                 Contact
               </h3>
               <ul className="space-y-2 text-sm text-gray-300">
-                <li>Defence Headquarters Complex</li>
+                <li>Nigerian Army Headquarters Complex</li>
                 <li>Abuja, Nigeria</li>
                 <li>Email: healthservices@mod.gov.ng</li>
                 <li>Emergency: 0800-MIL-HELP</li>
@@ -43,7 +43,7 @@ export default function Footer() {
                     to="/policy"
                     className="text-gray-300 hover:text-yellow-400"
                   >
-                    Defence Health Policy
+                    Nigerian Army Health Policy
                   </Link>
                 </li>
                 <li>
@@ -69,7 +69,7 @@ export default function Footer() {
           </div>
           <div className="border-t border-green-800 mt-8 pt-8 text-center text-sm text-gray-300">
             <p>
-              &copy; {new Date().getFullYear()} Nigerian Defence Health
+              &copy; {new Date().getFullYear()} Nigerian Army Health
               Services. All rights reserved.
             </p>
             <p className="mt-2">Patriotic in Service</p>

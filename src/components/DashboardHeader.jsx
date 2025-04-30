@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
-import { UserCircleIcon } from '@heroicons/react/24/outline';
+// import { UserCircleIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../context/AuthContext'; // Import the auth context
 import { useNavigate } from 'react-router-dom';
-// import { UserCircleIcon } from '@heroicons/react/24/outline';
-// import { useAuth } from '../context/AuthContext'; // Import the auth context
 
 export default function DashboardHeader({PageTitle}) {
     const navigate = useNavigate();
@@ -23,11 +21,11 @@ export default function DashboardHeader({PageTitle}) {
             <div>
               <h1 className="text-2xl font-bold text-green-900">{PageTitle || "Dashbord Title"}</h1>
               <p className="text-sm text-gray-600">
-                Welcome back, {user?.role === 'admin' ? 'Commander' : 'Officer'} {user?.firstname} {user?.lastname}
+                Welcome back, {user?.role === 'admin' ? 'Admin' : 'Remitter'} {user?.firstname} {user?.lastname}
               </p>
             </div>
             <div className="flex items-center">
-              <UserCircleIcon className="h-8 w-8 text-green-900 mr-2" />
+              {/* <UserCircleIcon className="h-8 w-8 text-green-900 mr-2" /> */}
               <div>
                 <p className="text-sm font-medium">
                   {user?.firstname} {user?.lastname}
