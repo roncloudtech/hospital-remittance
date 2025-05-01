@@ -18,6 +18,7 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
           {
             headers: {
               Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Accept: "application/json", // This helps Laravel respond with JSON and handle auth
             },
           }
         );
