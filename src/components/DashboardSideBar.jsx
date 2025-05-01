@@ -94,7 +94,9 @@ export default function DashboardSideBar() {
                 isCollapsed && !isMobileView ? "text-center" : ""
               }`}
             >
-              {isCollapsed && !isMobileView ? "NAH" : "Nigerian Army Hospitals Portal"}
+              {isCollapsed && !isMobileView
+                ? "NAH"
+                : "Nigerian Army Hospitals Portal"}
             </h2>
             {!isCollapsed && !isMobileView && (
               <p className="text-gray-300 text-sm mt-2">
@@ -152,28 +154,25 @@ export default function DashboardSideBar() {
                 <UserGroupIcon className="h-5 w-5" />
                 {!isCollapsed && <span className="ml-3">Manage Users</span>}
               </NavLink>
+
+              <NavLink
+                to="/admin-reports"
+                className={({ isActive }) =>
+                  `flex items-center px-4 py-3 text-sm font-medium ${
+                    isActive
+                      ? "bg-green-800 text-yellow-400"
+                      : "text-gray-300 hover:bg-green-800"
+                  } ${isCollapsed ? "justify-center" : "px-6"}`
+                }
+              >
+                <ShieldCheckIcon className="h-5 w-5" />
+                {!isCollapsed && <span className="ml-3">Admin Reports</span>}
+              </NavLink>
             </>
           )}
           {/* Remitter Links */}
           {user?.role === "remitter" && (
             <>
-              {/* <NavLink
-            to="/user/dashboard"
-            onClick={closeMobileMenu}
-            className={({ isActive }) =>
-              `flex items-center px-4 py-3 text-sm font-medium ${
-                isActive
-                  ? "bg-green-800 text-yellow-400"
-                  : "text-gray-300 hover:bg-green-800"
-              } ${isCollapsed && !isMobileView ? "justify-center" : "px-6"}`
-            }
-          >
-            <ChartBarIcon className="h-5 w-5" />
-            {(!isCollapsed || isMobileView) && (
-              <span className="ml-3">Overview</span>
-            )}
-          </NavLink> */}
-
               <NavLink
                 to="/remit-fund"
                 className={({ isActive }) =>
@@ -186,6 +185,20 @@ export default function DashboardSideBar() {
               >
                 <ArrowUpIcon className="h-5 w-5" />
                 {!isCollapsed && <span className="ml-3">Remit Fund</span>}
+              </NavLink>
+
+              <NavLink
+                to="/remitter-reports"
+                className={({ isActive }) =>
+                  `flex items-center px-4 py-3 text-sm font-medium ${
+                    isActive
+                      ? "bg-green-800 text-yellow-400"
+                      : "text-gray-300 hover:bg-green-800"
+                  } ${isCollapsed ? "justify-center" : "px-6"}`
+                }
+              >
+                <ShieldCheckIcon className="h-5 w-5" />
+                {!isCollapsed && <span className="ml-3">Reports</span>}
               </NavLink>
             </>
           )}
@@ -203,19 +216,7 @@ export default function DashboardSideBar() {
             <DocumentTextIcon className="h-5 w-5" />
             {!isCollapsed && <span className="ml-3">Transactions</span>}
           </NavLink>
-          <NavLink
-            to="/reports"
-            className={({ isActive }) =>
-              `flex items-center px-4 py-3 text-sm font-medium ${
-                isActive
-                  ? "bg-green-800 text-yellow-400"
-                  : "text-gray-300 hover:bg-green-800"
-              } ${isCollapsed ? "justify-center" : "px-6"}`
-            }
-          >
-            <ShieldCheckIcon className="h-5 w-5" />
-            {!isCollapsed && <span className="ml-3">Reports</span>}
-          </NavLink>
+
           {/* Logout Link */}
           <NavLink
             to="/logout"

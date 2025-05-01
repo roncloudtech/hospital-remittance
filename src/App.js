@@ -15,6 +15,9 @@ import Logout from "./pages/Logout";
 import PendingApprovals from "./pages/PendingApprovals";
 import Transactions from "./pages/Transactions";
 import EditHospital from "./pages/EditHospital";
+import OpenTicket from "./pages/OpenTicket";
+import AdminReports from "./pages/AdminReports";
+import RemitterReports from "./pages/RemitterReports";
 
 // Main application component
 function App() {
@@ -23,7 +26,7 @@ function App() {
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<Home />} />
-        <Route path="/register" element={<Register />} />
+        {/* <Route path="/register" element={<Register />} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout/>} />
         <Route path="/unauthorized" element={<Unauthorized />} />
@@ -34,27 +37,29 @@ function App() {
         <Route element={<ProtectedLayout />}>
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/transactions" element={<Transactions />} />
+          <Route path="/open-ticket" element={<OpenTicket />} />
         </Route>
 
         {/* Admin-only routes */}
         <Route element={<AdminRoute />}>
-          {/* <Route path="/register" element={<Register />} /> */}
+          <Route path="/register" element={<Register />} />
           <Route path="/pending-approvals" element={<PendingApprovals/>} />
           <Route path="/manage-users" element={<ManageUsers />}/>
           <Route path="/add-hospital" element={<AddHospital/>} />
           <Route path="/edit-hospital/" element={<EditHospital />} />
           <Route path="/manage-hospitals" element={<ManageHospitals />} />
           <Route path="/add-hospital" element={<AddHospital/>}/>
+          <Route path="/admin-reports" element={<AdminReports/>} />
         </Route>
 
         {/* Remitter-only routes */}
         <Route element={<UserRoute />}>
-          {/* <Route path="/user/dashboard" element={<Dashboard />} /> */}
           <Route path="/remit-fund" element={<RemitFund />} />
+          <Route path="/remitter-reports" element={<RemitterReports />} />
         </Route>
 
         {/* Catch-all for invalid routes */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        <Route path="*" element={<Navigate to="/unauthorized" replace />} />
       </Routes>
     </BrowserRouter>
   );
