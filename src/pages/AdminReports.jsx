@@ -8,7 +8,7 @@ const AdminReports = () => {
   const { authToken, user } = useAuth();
   const API_PUBLIC_URL = "https://api.namm.com.ng";
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api";
-  // const API_BASE_URL2 = process.env.REACT_APP_API_BASE_URL.replace("/api", "") || "http://localhost:8000";
+
   const [tickets, setTickets] = useState([]);
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -80,13 +80,7 @@ const AdminReports = () => {
                       <td className="py-2 px-4 border">{ticket.message}</td>
                       <td className="py-2 px-4 border">
                         {ticket.evidence_path ? (
-                          // <a
-                          //   href={`${API_BASE_URL.replace("/api", "")}/storage/${ticket.evidence_path}`}
-                          //   // href={`${API_BASE_URL2}/storage/${ticket.evidence_path}`}
-                          //   target="_blank"
-                          //   rel="noopener noreferrer"
-                          //   className="text-blue-600 underline"
-                          // >
+                   
                           <a
                             href={`${API_PUBLIC_URL}/storage/${ticket.evidence_path}`}
                             target="_blank"
