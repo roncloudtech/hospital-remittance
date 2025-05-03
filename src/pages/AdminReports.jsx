@@ -7,7 +7,8 @@ import DashboardHeader from "../components/DashboardHeader";
 const AdminReports = () => {
   const { authToken, user } = useAuth();
   const API_PUBLIC_URL = "https://api.namm.com.ng";
-  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api";
+  const API_BASE_URL =
+    process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api";
 
   const [tickets, setTickets] = useState([]);
   const [users, setUsers] = useState([]);
@@ -51,6 +52,32 @@ const AdminReports = () => {
     return user?.email || "N/A";
   };
 
+  const updateTicketStatus = async (ticketId, newStatus) => {
+    try {
+      const response = await axios.put(
+        `${API_BASE_URL}/admin/tickets/${ticketId}/status`,
+        { status: newStatus },
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+
+      if (response.data.success) {
+        // Update ticket list with new status
+        setTickets((prev) =>
+          prev.map((t) =>
+            t.id === ticketId ? { ...t, status: newStatus } : t
+          )
+        );
+      }
+    } catch (error) {
+      console.error(`Failed to update status: ${error.message}`);
+      alert("Error updating ticket status");
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
       <DashboardSideBar />
@@ -75,12 +102,13 @@ const AdminReports = () => {
                 <tbody>
                   {tickets.map((ticket) => (
                     <tr key={ticket.id}>
-                      <td className="py-2 px-4 border">{getUserEmail(ticket.user_id)}</td>
+                      <td className="py-2 px-4 border">
+                        {getUserEmail(ticket.user_id)}
+                      </td>
                       <td className="py-2 px-4 border">{ticket.subject}</td>
                       <td className="py-2 px-4 border">{ticket.message}</td>
                       <td className="py-2 px-4 border">
                         {ticket.evidence_path ? (
-                   
                           <a
                             href={`${API_PUBLIC_URL}/storage/${ticket.evidence_path}`}
                             target="_blank"
@@ -93,12 +121,34 @@ const AdminReports = () => {
                           "None"
                         )}
                       </td>
-                      <td className="py-2 px-4 border capitalize">{ticket.status}</td>
+                      <td className="py-2 px-4 border capitalize">
+                        <span
+                          className={`px-2 py-1 text-sm rounded-full ${
+                            ticket.status === "resolved"
+                              ? "bg-green-100 text-green-800"
+                              : ticket.status === "open"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-red-100 text-red-500"
+                          }`}
+                        >
+                          {ticket.status}
+                        </span>
+                      </td>
                       <td className="py-2 px-4 border">
-                        <button className="text-sm bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 mr-2">
+                        <button
+                          onClick={() =>
+                            updateTicketStatus(ticket.id, "resolved")
+                          }
+                          className="text-sm bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 mr-2"
+                        >
                           Resolve
                         </button>
-                        <button className="text-sm bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700">
+                        <button
+                          onClick={() =>
+                            updateTicketStatus(ticket.id, "closed")
+                          }
+                          className="text-sm bg-gray-600 text-white px-3 py-1 rounded hover:bg-gray-700"
+                        >
                           Close
                         </button>
                       </td>
@@ -106,7 +156,10 @@ const AdminReports = () => {
                   ))}
                   {tickets.length === 0 && (
                     <tr>
-                      <td colSpan="6" className="text-center py-4 text-gray-500">
+                      <td
+                        colSpan="6"
+                        className="text-center py-4 text-gray-500"
+                      >
                         No tickets available.
                       </td>
                     </tr>

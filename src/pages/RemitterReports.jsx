@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 
 const RemitterReports = () => {
   const { authToken} = useAuth();
+  const API_PUBLIC_URL = "https://api.namm.com.ng";
   const API_BASE_URL =process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api";
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -75,11 +76,17 @@ const RemitterReports = () => {
                       <td className="py-2 px-4 border">{ticket.message}</td>
                       <td className="py-2 px-4 border">
                         {ticket.evidence_path ? (
+                          // <a
+                          //   href={`${API_BASE_URL.replace(
+                          //     "/api",
+                          //     ""
+                          //   )}/storage/${ticket.evidence_path}`}
+                          //   target="_blank"
+                          //   rel="noopener noreferrer"
+                          //   className="text-blue-600 underline"
+                          // >
                           <a
-                            href={`${API_BASE_URL.replace(
-                              "/api",
-                              ""
-                            )}/storage/${ticket.evidence_path}`}
+                            href={`${API_PUBLIC_URL}/storage/${ticket.evidence_path}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="text-blue-600 underline"
@@ -91,7 +98,17 @@ const RemitterReports = () => {
                         )}
                       </td>
                       <td className="py-2 px-4 border capitalize">
-                        {ticket.status}
+                      <span
+                          className={`px-2 py-1 text-sm rounded-full ${
+                            ticket.status === "resolved"
+                              ? "bg-green-100 text-green-800"
+                              : ticket.status === "open"
+                              ? "bg-yellow-100 text-yellow-800"
+                              : "bg-red-100 text-red-500"
+                          }`}
+                        >
+                          {ticket.status}
+                        </span>
                       </td>
                     </tr>
                   ))}
