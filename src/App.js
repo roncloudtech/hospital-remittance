@@ -59,7 +59,7 @@ function App() {
         </Route>
 
         {/* Catch-all for invalid routes */}
-        <Route path="*" element={<Navigate to="/unauthorized" replace />} />
+        {/* <Route path="*" element={<Navigate to="/unauthorized" replace />} /> */}
       </Routes>
     </BrowserRouter>
   );
