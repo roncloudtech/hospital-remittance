@@ -18,7 +18,8 @@ const AddHospital = () => {
     military_division: '',
     address: '',
     phone_number: '',
-    hospital_remitter: ''
+    hospital_remitter: '',
+    monthly_remittance_target: '',
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState({});
@@ -70,6 +71,10 @@ const AddHospital = () => {
     // Remitter validation (keep original field name)
     if (!formData.hospital_remitter) {
       newErrors.hospital_remitter = 'Remitter is required';
+    }
+    // Monthly Remittance Target validation (keep original field name)
+    if (!formData.monthly_remittance_target) {
+      newErrors.monthly_remittance_target = 'Monthly Remittance Target is required';
     }
 
     setErrors(newErrors);
@@ -222,29 +227,50 @@ const AddHospital = () => {
                 )}
               </div>
 
+              {/* Remitter Selection Field & Monthly Remittance Target */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Remitter Selection Field */}
-              <div>
-                <label className="block text-sm font-medium text-green-900 mb-1">
-                  Assign Remitter
-                </label>
-                <select
-                  name="hospital_remitter" // Match backend field name
-                  value={formData.hospital_remitter}
-                  onChange={handleChange}
-                  className={`w-full px-3 py-2 border rounded-md ${
-                    errors.hospital_remitter ? 'border-red-500' : 'border-gray-300'
-                  } focus:ring-yellow-400 focus:border-yellow-400`}
-                >
-                  <option value="">Select Remitter</option>
-                  {remitters.map(remitter => (
-                    <option key={remitter.id} value={remitter.id}>
-                     {remitter.role} |{remitter.firstname} {remitter.lastname} | {remitter.phone_number}
-                    </option>
-                  ))}
-                </select>
-                {errors.hospital_remitter && (
-                  <p className="text-red-500 text-sm mt-1">{errors.hospital_remitter}</p>
-                )}
+                <div>
+                  <label className="block text-sm font-medium text-green-900 mb-1">
+                    Assign Remitter
+                  </label>
+                  <select
+                    name="hospital_remitter" // Match backend field name
+                    value={formData.hospital_remitter}
+                    onChange={handleChange}
+                    className={`w-full px-3 py-2 border rounded-md ${
+                      errors.hospital_remitter ? 'border-red-500' : 'border-gray-300'
+                    } focus:ring-yellow-400 focus:border-yellow-400`}
+                  >
+                    <option value="">Select Remitter</option>
+                    {remitters.map(remitter => (
+                      <option key={remitter.id} value={remitter.id}>
+                      {remitter.role} |{remitter.firstname} {remitter.lastname} | {remitter.phone_number}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.hospital_remitter && (
+                    <p className="text-red-500 text-sm mt-1">{errors.hospital_remitter}</p>
+                  )}
+                </div>
+
+                {/* Monthly Remittance Target */}
+                <div>
+                  <label className="block text-sm font-medium text-green-900 mb-1">
+                    Monthly Remittance Target
+                  </label>
+                  <input
+                    name="monthly_remittance_target"
+                    value={formData.monthly_remittance_target}
+                    onChange={handleChange}
+                    className={`w-full px-3 py-2 border rounded-md ${
+                      errors.monthly_remittance_target ? 'border-red-500' : 'border-gray-300'
+                    } focus:ring-yellow-400 focus:border-yellow-400`}
+                  />
+                  {errors.monthly_remittance_target && (
+                    <p className="text-red-500 text-sm mt-1">{errors.monthly_remittance_target}</p>
+                  )}
+                </div>
               </div>
 
               {/* Submit Button */}
