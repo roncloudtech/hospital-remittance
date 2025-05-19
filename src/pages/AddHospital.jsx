@@ -68,6 +68,7 @@ const AddHospital = () => {
     if (!/^\+234\d{10}$|^0\d{10}$/.test(formData.phone_number)) {
       newErrors.phone_number = 'Invalid Nigerian phone format (+234...)';
     }
+    
     // Remitter validation (keep original field name)
     if (!formData.hospital_remitter) {
       newErrors.hospital_remitter = 'Remitter is required';
@@ -261,6 +262,8 @@ const AddHospital = () => {
                   </label>
                   <input
                     name="monthly_remittance_target"
+                    type='number'
+                    min="1"
                     value={formData.monthly_remittance_target}
                     onChange={handleChange}
                     className={`w-full px-3 py-2 border rounded-md ${

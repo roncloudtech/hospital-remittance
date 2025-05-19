@@ -18,6 +18,7 @@ import EditHospital from "./pages/EditHospital";
 import OpenTicket from "./pages/OpenTicket";
 import AdminReports from "./pages/AdminReports";
 import RemitterReports from "./pages/RemitterReports";
+import MonthlyTarget from "./pages/MonthlyTarget";
 
 // Main application component
 function App() {
@@ -38,6 +39,7 @@ function App() {
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/transactions" element={<Transactions />} />
           <Route path="/open-ticket" element={<OpenTicket />} />
+          <Route path="/monthly-target" element={<MonthlyTarget/>} />
         </Route>
 
         {/* Admin-only routes */}

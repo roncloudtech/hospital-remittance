@@ -10,6 +10,8 @@ const Dashboard = () => {
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const { user, authToken } = useAuth();
   const [transactions, setTransactions] = useState([]);
+  const [hospitalSummaries, setHospitalSummaries] = useState([]);
+
   const [loading, setLoading] = useState(true);
 
   const [totalFunds, setTotalFunds] = useState(0);
@@ -22,8 +24,12 @@ const Dashboard = () => {
       try {
         const endpoint =
           user?.role === "admin"
-            ? `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/allremittances`
-            : `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/getremittances`;
+            ? `${
+                API_BASE_URL ? API_BASE_URL : "http://localhost:8000/api"
+              }/allremittances`
+            : `${
+                API_BASE_URL ? API_BASE_URL : "http://localhost:8000/api"
+              }/getremittances`;
 
         const res = await axios.get(endpoint, {
           headers: {
@@ -74,6 +80,29 @@ const Dashboard = () => {
     fetchTransactions();
   }, [user, authToken, API_BASE_URL]);
 
+  useEffect(() => {
+    const fetchHospitalSummaries = async () => {
+      try {
+        const endpoint = `${
+                API_BASE_URL ? API_BASE_URL : "http://localhost:8000/api"
+              }/remitter-hospitals-summary`;
+        const res = await axios.get(endpoint, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        });
+        // console.log(res.data.data)
+        if (res.data.success) {
+          setHospitalSummaries(res.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching hospital summaries:", error);
+      }
+    };
+
+    fetchHospitalSummaries();
+  }, [authToken, API_BASE_URL]);
+
   return (
     <div className="min-h-screen bg-gray-50">
       <DashboardSideBar />
@@ -114,10 +143,63 @@ const Dashboard = () => {
                   {pendingCount} Requests
                 </p>
                 <span className="text-sm text-green-600">
-                  {pendingCount > 1 ? "Multiple Pending" : pendingCount + " Request"}
+                  {pendingCount > 1
+                    ? "Multiple Pending"
+                    : pendingCount + " Request"}
                 </span>
               </div>
             </NavLink>
+          </div>
+
+          {/* Hospitals and Monthly Remittance Table */}
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-green-100 mb-6">
+            <h3 className="text-lg font-medium text-green-900 mb-4">
+              Hospitals and Monthly Remittance
+            </h3>
+
+            {hospitalSummaries.length === 0 ? (
+              <p className="text-gray-500">No hospitals found.</p>
+            ) : (
+              hospitalSummaries.map((hospital) => (
+                <div key={hospital.hospital_name} className="mb-4">
+                {console.log(hospital)}
+                  <h4 className="text-green-800 font-semibold">
+                    {hospital.hospital_name}
+                  </h4>
+                  <table className="w-full text-sm mt-2 mb-4">
+                    <thead>
+                      <tr className="text-left border-b">
+                        <th className="pb-2">Month</th>
+                        <th className="pb-2">Target</th>
+                        <th className="pb-2">Paid</th>
+                        <th className="pb-2">Balance</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(hospital.records || []).map((r, index) => (
+                        <tr key={index} className="border-b last:border-0">
+                          <td className="py-2">
+                            {/* {r.month} */}
+                            {new Date(r.year, r.month - 1).toLocaleString(
+                              "default",
+                              {
+                                month: "long",
+                                year: "numeric",
+                              }
+                            )}
+                          </td>
+                          <td>
+                            ₦{Number(hospital.monthly_target).toLocaleString()}
+                          </td>
+                          <td>₦{Number(r.amount_paid).toLocaleString()}</td>
+                          <td>₦{Number(r.balance).toLocaleString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ))
+            )}
           </div>
 
           {/* Recent Transactions Table */}

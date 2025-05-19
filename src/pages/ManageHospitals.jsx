@@ -86,6 +86,9 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
                           Formation
                         </th>
                         <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-green-900 uppercase tracking-wider">
+                          Monthly Target
+                        </th>
+                        <th className="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-green-900 uppercase tracking-wider">
                           Actions
                         </th>
                       </tr>
@@ -101,6 +104,9 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
                             {hospital.military_division}
+                          </td>
+                          <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {hospital.monthly_remittance_target ? "₦"+ hospital.monthly_remittance_target.toLocaleString() : "No Target"}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm">
                             <NavLink to={`/edit-hospital?id=${hospital.id}`} className="text-yellow-600 hover:text-yellow-900 mr-4">
