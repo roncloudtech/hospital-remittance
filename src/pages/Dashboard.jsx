@@ -14,6 +14,10 @@ const Dashboard = () => {
 
   const [loading, setLoading] = useState(true);
 
+  const [totalTarget, setTotalTarget] = useState(0);
+  const [totalBalance, setTotalBalance] = useState(0);
+  const [totalAmountPaid, setTotalAmountPaid] = useState(0);
+
   const [totalFunds, setTotalFunds] = useState(0);
   const [recentFunds, setRecentFunds] = useState(0);
   const [pendingCount, setPendingCount] = useState(0);
@@ -83,17 +87,42 @@ const Dashboard = () => {
   useEffect(() => {
     const fetchHospitalSummaries = async () => {
       try {
-        const endpoint = `${
+        const endpoint =
+          user.role === "remitter"
+            ? `${
                 API_BASE_URL ? API_BASE_URL : "http://localhost:8000/api"
-              }/remitter-hospitals-summary`;
+              }/remitter-hospitals-summary`
+            : `${
+                API_BASE_URL ? API_BASE_URL : "http://localhost:8000/api"
+              }/admin-hospitals-summary`;
         const res = await axios.get(endpoint, {
           headers: {
             Authorization: `Bearer ${authToken}`,
           },
         });
-        // console.log(res.data.data)
+
         if (res.data.success) {
+          const summaries = res.data.data;
           setHospitalSummaries(res.data.data);
+
+
+          let targetSum = 0;
+          let paidSum = 0;
+          let balanceSum = 0;
+
+          summaries.forEach((hospital) => {
+            const monthlyTarget = Number(hospital.monthly_target);
+            (hospital.records || []).forEach((record) => {
+              targetSum += monthlyTarget;
+              paidSum += Number(record.amount_paid);
+              balanceSum += Number(record.balance);
+            });
+          });
+
+          setTotalTarget(targetSum);
+          setTotalAmountPaid(paidSum);
+          setTotalBalance(balanceSum);
+          // console.log(hospitalSummaries);
         }
       } catch (error) {
         console.error("Error fetching hospital summaries:", error);
@@ -101,7 +130,7 @@ const Dashboard = () => {
     };
 
     fetchHospitalSummaries();
-  }, [authToken, API_BASE_URL]);
+  }, [hospitalSummaries, user, authToken, API_BASE_URL]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -132,6 +161,7 @@ const Dashboard = () => {
               </p>
               <span className="text-sm text-green-600">Last 7 days</span>
             </div>
+
             <NavLink
               to={user.role === "admin" ? "/pending-approvals" : "/dashboard"}
             >
@@ -149,57 +179,44 @@ const Dashboard = () => {
                 </span>
               </div>
             </NavLink>
-          </div>
 
-          {/* Hospitals and Monthly Remittance Table */}
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-green-100 mb-6">
-            <h3 className="text-lg font-medium text-green-900 mb-4">
-              Hospitals and Monthly Remittance
-            </h3>
-
-            {hospitalSummaries.length === 0 ? (
-              <p className="text-gray-500">No hospitals found.</p>
-            ) : (
-              hospitalSummaries.map((hospital) => (
-                <div key={hospital.hospital_name} className="mb-4">
-                {console.log(hospital)}
-                  <h4 className="text-green-800 font-semibold">
-                    {hospital.hospital_name}
-                  </h4>
-                  <table className="w-full text-sm mt-2 mb-4">
-                    <thead>
-                      <tr className="text-left border-b">
-                        <th className="pb-2">Month</th>
-                        <th className="pb-2">Target</th>
-                        <th className="pb-2">Paid</th>
-                        <th className="pb-2">Balance</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {(hospital.records || []).map((r, index) => (
-                        <tr key={index} className="border-b last:border-0">
-                          <td className="py-2">
-                            {/* {r.month} */}
-                            {new Date(r.year, r.month - 1).toLocaleString(
-                              "default",
-                              {
-                                month: "long",
-                                year: "numeric",
-                              }
-                            )}
-                          </td>
-                          <td>
-                            ₦{Number(hospital.monthly_target).toLocaleString()}
-                          </td>
-                          <td>₦{Number(r.amount_paid).toLocaleString()}</td>
-                          <td>₦{Number(r.balance).toLocaleString()}</td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ))
-            )}
+            <NavLink to={"/monthly-target"}>
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-green-100">
+              <h3 className="text-lg font-medium text-green-900">
+                Total Target
+              </h3>
+              <p className="text-2xl font-bold mt-2">
+                ₦{totalTarget.toLocaleString()}
+              </p>
+              <span className="text-sm text-green-600">Expected Payments</span>
+            </div>
+            </NavLink>
+            
+            <NavLink to={"/monthly-target"}>
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-green-100">
+              <h3 className="text-lg font-medium text-green-900">
+                Amount Paid
+              </h3>
+              <p className="text-2xl font-bold mt-2">
+                ₦{totalAmountPaid.toLocaleString()}
+              </p>
+              <span className="text-sm text-green-600">Total Received</span>
+            </div>
+            </NavLink>
+            
+            <NavLink to={"/monthly-target"}>
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-green-100">
+              <h3 className="text-lg font-medium text-green-900">
+                Outstanding Balance
+              </h3>
+              <p className="text-2xl font-bold mt-2">
+                ₦{totalBalance.toLocaleString()}
+              </p>
+              <span className="text-sm text-green-600">
+                Amount Yet to be Paid
+              </span>
+            </div>
+            </NavLink>
           </div>
 
           {/* Recent Transactions Table */}

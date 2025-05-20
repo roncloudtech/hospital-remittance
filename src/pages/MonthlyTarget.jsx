@@ -3,108 +3,80 @@ import axios from "axios";
 import DashboardSideBar from "../components/DashboardSideBar";
 import DashboardHeader from "../components/DashboardHeader";
 import { useAuth } from "../context/AuthContext";
-import DatePicker from "react-datepicker";
+// import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import Papa from "papaparse";
-import { saveAs } from "file-saver";
-import { format } from "date-fns";
+// import Papa from "papaparse";
+// import { saveAs } from "file-saver";
+// import { format } from "date-fns";
 
 const MonthlyTarget = () => {
+  // Base API URL
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const { user, authToken } = useAuth();
-  const [hospitals, setHospitals] = useState([]);
-  const [filteredHospitals, setFilteredHospitals] = useState([]);
-  const [remitters, setRemitters] = useState([]);
+  // const [transactions, setTransactions] = useState([]);
+  const [hospitalSummaries, setHospitalSummaries] = useState([]);
+
   const [loading, setLoading] = useState(true);
 
-  const [filters, setFilters] = useState({
-    search: "",
-    remitter: "",
-    month: new Date(),
-  });
+  const [totalTarget, setTotalTarget] = useState(0);
+  const [totalBalance, setTotalBalance] = useState(0);
+  const [totalAmountPaid, setTotalAmountPaid] = useState(0);
 
-  const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 10;
+  // const [totalFunds, setTotalFunds] = useState(0);
+  // const [recentFunds, setRecentFunds] = useState(0);
+  // const [pendingCount, setPendingCount] = useState(0);
 
   useEffect(() => {
-    const fetchHospitals = async () => {
-      setLoading(true);
+    const fetchHospitalSummaries = async () => {
       try {
+        setLoading(true);
         const endpoint =
-          user?.role === "admin"
-            ? `${API_BASE_URL}/hospitals`
-            : `${API_BASE_URL}/remitter/hospitals`;
-
-        const params = {
-          month: format(filters.month, "yyyy-MM"),
-        };
-
-        const response = await axios.get(endpoint, {
-          headers: { Authorization: `Bearer ${authToken}` },
-          params,
+          user.role === "remitter"
+            ? `${
+                API_BASE_URL ? API_BASE_URL : "http://localhost:8000/api"
+              }/remitter-hospitals-summary`
+            : `${
+                API_BASE_URL ? API_BASE_URL : "http://localhost:8000/api"
+              }/admin-hospitals-summary`;
+        const res = await axios.get(endpoint, {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
         });
 
-        const data = response.data.data;
-        setHospitals(data);
-        setFilteredHospitals(data);
+        // console.log(res.data.data)
+        if (res.data.success) {
+          setLoading(false);
+          const summaries = res.data.data;
+          setHospitalSummaries(res.data.data);
+          // console.log(res.data.data);
+          // console.log(res.data.data.records);
 
-        if (user?.role === "admin") {
-          const uniqueRemitters = [
-            ...new Set(data.map((h) => h.remitter_name).filter(Boolean)),
-          ];
-          setRemitters(uniqueRemitters);
+          let targetSum = 0;
+          let paidSum = 0;
+          let balanceSum = 0;
+
+          summaries.forEach((hospital) => {
+            const monthlyTarget = Number(hospital.monthly_target);
+            (hospital.records || []).forEach((record) => {
+              targetSum += monthlyTarget;
+              paidSum += Number(record.amount_paid);
+              balanceSum += Number(record.balance);
+            });
+          });
+
+          setTotalTarget(targetSum);
+          setTotalAmountPaid(paidSum);
+          setTotalBalance(balanceSum);
         }
       } catch (error) {
-        console.error("Error fetching hospitals:", error);
-      } finally {
         setLoading(false);
+        console.error("Error fetching hospital summaries:", error);
       }
     };
 
-    fetchHospitals();
-  }, [filters.month, authToken, user?.role, API_BASE_URL]);
-
-  useEffect(() => {
-    let filtered = [...hospitals];
-
-    if (filters.search) {
-      filtered = filtered.filter((h) =>
-        h.hospital_name.toLowerCase().includes(filters.search.toLowerCase())
-      );
-    }
-
-    if (user?.role === "admin" && filters.remitter) {
-      filtered = filtered.filter((h) => h.remitter_name === filters.remitter);
-    }
-
-    setFilteredHospitals(filtered);
-    setCurrentPage(1);
-  }, [filters, hospitals, user?.role]);
-
-  const handleCSVExport = () => {
-    const data = filteredHospitals.map((h) => ({
-      Hospital: h.hospital_name,
-      "Monthly Target": h.monthly_target,
-      "Total Paid": h.total_paid,
-      Balance: h.balance,
-      ...(user?.role === "admin" && { Remitter: h.remitter_name }),
-      Month: format(filters.month, "MM/yyyy"),
-    }));
-
-    if (data.length > 0) {
-      const csv = Papa.unparse(data);
-      const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-      saveAs(blob, `hospitals_${Date.now()}.csv`);
-    } else {
-      alert("No data to export");
-    }
-  };
-
-  const totalPages = Math.ceil(filteredHospitals.length / itemsPerPage);
-  const paginatedData = filteredHospitals.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
+    fetchHospitalSummaries();
+  }, [user, authToken, API_BASE_URL]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -112,104 +84,96 @@ const MonthlyTarget = () => {
       <div className="md:ml-64">
         <DashboardHeader PageTitle="Hospitals" />
         <main className="p-6">
-          <div className="flex flex-wrap gap-4 mb-4">
-            <input
-              type="text"
-              placeholder="Search hospitals..."
-              value={filters.search}
-              onChange={(e) => setFilters({ ...filters, search: e.target.value })}
-              className="border px-3 py-2 rounded-md"
-            />
+          {/* Summary Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-green-100">
+              <h3 className="text-lg font-medium text-green-900">
+                Total Target
+              </h3>
+              <p className="text-2xl font-bold mt-2">
+                ₦{totalTarget.toLocaleString()}
+              </p>
+              <span className="text-sm text-green-600">Expected Payments</span>
+            </div>
 
-            {user?.role === "admin" && (
-              <select
-                value={filters.remitter}
-                onChange={(e) =>
-                  setFilters({ ...filters, remitter: e.target.value })
-                }
-                className="border px-3 py-2 rounded-md"
-              >
-                <option value="">All Remitters</option>
-                {remitters.map((remitter) => (
-                  <option key={remitter} value={remitter}>
-                    {remitter}
-                  </option>
-                ))}
-              </select>
-            )}
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-green-100">
+              <h3 className="text-lg font-medium text-green-900">
+                Amount Paid
+              </h3>
+              <p className="text-2xl font-bold mt-2">
+                ₦{totalAmountPaid.toLocaleString()}
+              </p>
+              <span className="text-sm text-green-600">Total Received</span>
+            </div>
 
-            <DatePicker
-              selected={filters.month}
-              onChange={(date) => setFilters({ ...filters, month: date })}
-              dateFormat="MM/yyyy"
-              showMonthYearPicker
-              className="border px-3 py-2 rounded-md"
-            />
-
-            <button
-              onClick={handleCSVExport}
-              className="bg-green-900 text-white px-4 py-2 rounded-md hover:bg-green-800"
-            >
-              Export CSV
-            </button>
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-green-100">
+              <h3 className="text-lg font-medium text-green-900">
+                Outstanding Balance
+              </h3>
+              <p className="text-2xl font-bold mt-2">
+                ₦{totalBalance.toLocaleString()}
+              </p>
+              <span className="text-sm text-green-600">
+                Amount Yet to be Paid
+              </span>
+            </div>
           </div>
 
+          {/* Hospitals and Monthly Remittance Table */}
           {loading ? (
-            <p className="text-center text-gray-500">Loading hospitals...</p>
-          ) : paginatedData.length === 0 ? (
-            <p className="text-center text-gray-500">No hospitals found</p>
-          ) : (
-            <div className="overflow-x-auto bg-white p-4 rounded-lg shadow border">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="text-left text-green-900 border-b">
-                    <th className="pb-3">Hospital</th>
-                    <th className="pb-3">Monthly Target</th>
-                    <th className="pb-3">Total Paid</th>
-                    <th className="pb-3">Balance</th>
-                    {user?.role === "admin" && <th className="pb-3">Remitter</th>}
-                  </tr>
-                </thead>
-                <tbody>
-                  {paginatedData.map((hospital) => (
-                    <tr
-                      key={hospital.id}
-                      className="border-b hover:bg-gray-50"
-                    >
-                      <td className="py-3">{hospital.hospital_name}</td>
-                      <td>₦{Number(hospital.monthly_target).toLocaleString()}</td>
-                      <td>₦{Number(hospital.total_paid).toLocaleString()}</td>
-                      <td>₦{Number(hospital.balance).toLocaleString()}</td>
-                      {user?.role === "admin" && (
-                        <td>{hospital.remitter_name || "N/A"}</td>
-                      )}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                <p className="text-center text-gray-500">
+                  Loading Hospital Records...
+                </p>
+              ) : (
+          <div className="bg-white p-6 rounded-lg shadow-sm border border-green-100 mb-6">
+            <h3 className="text-lg font-medium text-green-900 mb-4">
+              Hospitals and Monthly Remittance
+            </h3>
 
-              <div className="flex justify-between items-center mt-4">
-                <button
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
-                  className="px-4 py-2 bg-green-900 text-white rounded disabled:bg-gray-300"
-                >
-                  Previous
-                </button>
-                <span>
-                  Page {currentPage} of {totalPages}
-                </span>
-                <button
-                  onClick={() =>
-                    setCurrentPage((prev) => Math.min(prev + 1, totalPages))
-                  }
-                  disabled={currentPage === totalPages}
-                  className="px-4 py-2 bg-green-900 text-white rounded disabled:bg-gray-300"
-                >
-                  Next
-                </button>
-              </div>
-            </div>
+            {hospitalSummaries.length === 0 ? (
+              <p className="text-gray-500">No hospitals found.</p>
+            ) : (
+              hospitalSummaries.map((hospital) => (
+                <div key={hospital.hospital_name} className="mb-4">
+                {/* {console.log(hospital)} */}
+                  <h4 className="text-green-800 font-semibold">
+                    {hospital.hospital_name}
+                  </h4>
+                  <table className="w-full text-sm mt-2 mb-4">
+                    <thead>
+                      <tr className="text-left border-b">
+                        <th className="pb-2">Month</th>
+                        <th className="pb-2">Target</th>
+                        <th className="pb-2">Paid</th>
+                        <th className="pb-2">Balance</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {(hospital.records || []).map((r, index) => (
+                        <tr key={index} className="border-b last:border-0">
+                          <td className="py-2">
+                            {/* {r.month} */}
+                            {new Date(r.year, r.month - 1).toLocaleString(
+                              "default",
+                              {
+                                month: "long",
+                                year: "numeric",
+                              }
+                            )}
+                          </td>
+                          <td>
+                            ₦{Number(hospital.monthly_target).toLocaleString()}
+                          </td>
+                          <td>₦{Number(r.amount_paid).toLocaleString()}</td>
+                          <td>₦{Number(r.balance).toLocaleString()}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              ))
+            )}
+          </div>
           )}
         </main>
       </div>
