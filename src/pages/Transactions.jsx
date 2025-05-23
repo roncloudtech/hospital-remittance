@@ -180,6 +180,7 @@ const Transactions = () => {
                     <th className="pb-3">Hospital</th>
                     <th className="pb-3">Amount</th>
                     <th className="pb-3">Reference</th>
+                    <th className="pb-3">Description</th>
                     <th className="pb-3">Status</th>
                   </tr>
                 </thead>
@@ -192,6 +193,7 @@ const Transactions = () => {
                       <td>{tx.hospital?.hospital_name || "N/A"}</td>
                       <td>₦{Number(tx.amount).toLocaleString()}</td>
                       <td>{tx.payment_reference || "N/A"}</td>
+                      <td>{tx.description || "N/A"}</td>
                       <td>
                         <span
                           className={`px-2 py-1 text-sm rounded-full ${

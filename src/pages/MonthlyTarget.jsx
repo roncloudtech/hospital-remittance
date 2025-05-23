@@ -3,17 +3,12 @@ import axios from "axios";
 import DashboardSideBar from "../components/DashboardSideBar";
 import DashboardHeader from "../components/DashboardHeader";
 import { useAuth } from "../context/AuthContext";
-// import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-// import Papa from "papaparse";
-// import { saveAs } from "file-saver";
-// import { format } from "date-fns";
 
 const MonthlyTarget = () => {
   // Base API URL
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const { user, authToken } = useAuth();
-  // const [transactions, setTransactions] = useState([]);
   const [hospitalSummaries, setHospitalSummaries] = useState([]);
 
   const [loading, setLoading] = useState(true);
@@ -21,10 +16,6 @@ const MonthlyTarget = () => {
   const [totalTarget, setTotalTarget] = useState(0);
   const [totalBalance, setTotalBalance] = useState(0);
   const [totalAmountPaid, setTotalAmountPaid] = useState(0);
-
-  // const [totalFunds, setTotalFunds] = useState(0);
-  // const [recentFunds, setRecentFunds] = useState(0);
-  // const [pendingCount, setPendingCount] = useState(0);
 
   useEffect(() => {
     const fetchHospitalSummaries = async () => {
@@ -44,13 +35,10 @@ const MonthlyTarget = () => {
           },
         });
 
-        // console.log(res.data.data)
         if (res.data.success) {
           setLoading(false);
           const summaries = res.data.data;
           setHospitalSummaries(res.data.data);
-          // console.log(res.data.data);
-          // console.log(res.data.data.records);
 
           let targetSum = 0;
           let paidSum = 0;
@@ -121,59 +109,65 @@ const MonthlyTarget = () => {
 
           {/* Hospitals and Monthly Remittance Table */}
           {loading ? (
-                <p className="text-center text-gray-500">
-                  Loading Hospital Records...
-                </p>
-              ) : (
-          <div className="bg-white p-6 rounded-lg shadow-sm border border-green-100 mb-6">
-            <h3 className="text-lg font-medium text-green-900 mb-4">
-              Hospitals and Monthly Remittance
-            </h3>
+            <p className="text-center text-gray-500">
+              Loading Hospitals and Monthly Remittance Table...
+            </p>
+          ) : (
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-green-100 mb-6">
+              <h3 className="text-lg font-medium text-green-900 mb-4">
+                Hospitals and Monthly Remittance
+              </h3>
 
-            {hospitalSummaries.length === 0 ? (
-              <p className="text-gray-500">No hospitals found.</p>
-            ) : (
-              hospitalSummaries.map((hospital) => (
-                <div key={hospital.hospital_name} className="mb-4">
-                {/* {console.log(hospital)} */}
-                  <h4 className="text-green-800 font-semibold">
-                    {hospital.hospital_name}
-                  </h4>
-                  <table className="w-full text-sm mt-2 mb-4">
-                    <thead>
-                      <tr className="text-left border-b">
-                        <th className="pb-2">Month</th>
-                        <th className="pb-2">Target</th>
-                        <th className="pb-2">Paid</th>
-                        <th className="pb-2">Balance</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {(hospital.records || []).map((r, index) => (
-                        <tr key={index} className="border-b last:border-0">
-                          <td className="py-2">
-                            {/* {r.month} */}
-                            {new Date(r.year, r.month - 1).toLocaleString(
-                              "default",
-                              {
-                                month: "long",
-                                year: "numeric",
-                              }
-                            )}
-                          </td>
-                          <td>
-                            ₦{Number(hospital.monthly_target).toLocaleString()}
-                          </td>
-                          <td>₦{Number(r.amount_paid).toLocaleString()}</td>
-                          <td>₦{Number(r.balance).toLocaleString()}</td>
+              {hospitalSummaries.length === 0 ? (
+                <p className="text-gray-500">No hospitals found.</p>
+              ) : (
+                hospitalSummaries.map((hospital) => (
+                  <div key={hospital.hospital_name} className="mb-4">
+                    <h4 className="text-green-800 font-semibold">
+                      {hospital.hospital_name}
+                    </h4>
+                    <table className="w-full text-sm mt-2 mb-4 table-fixed">
+                      <thead>
+                        <tr className="text-left border-b">
+                          <th className="pb-2 w-1/4">Month</th>
+                          <th className="pb-2 w-1/4 text-right">Target</th>
+                          <th className="pb-2 w-1/4 text-right">Paid</th>
+                          <th className="pb-2 w-1/4 text-right">Balance</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              ))
-            )}
-          </div>
+                      </thead>
+                      <tbody>
+                        {(hospital.records || []).map((r, index) => (
+                          <tr key={index} className="border-b last:border-0">
+                            <td className="py-2">
+                              {new Date(r.year, r.month - 1).toLocaleString(
+                                "default",
+                                { month: "long", year: "numeric" }
+                              )}
+                            </td>
+                            <td className="py-2 text-right">
+                              ₦
+                              {Number(hospital.monthly_target).toLocaleString()}
+                            </td>
+                            <td className="py-2 text-right">
+                              ₦{Number(r.amount_paid).toLocaleString()}
+                            </td>
+                            <td
+                              className={`py-2 text-right ${
+                                r.balance < 0
+                                  ? "bg-red-100 text-red-500"
+                                  : "bg-green-100 text-green-800"
+                              }`}
+                            >
+                              ₦{Number(r.balance).toLocaleString()}
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                ))
+              )}
+            </div>
           )}
         </main>
       </div>

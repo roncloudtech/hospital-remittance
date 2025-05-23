@@ -2,8 +2,10 @@ import React, { useEffect } from 'react';
 // import { UserCircleIcon } from '@heroicons/react/24/outline';
 import { useAuth } from '../context/AuthContext'; // Import the auth context
 import { useNavigate } from 'react-router-dom';
+import useIdleTimer from '../hooks/useIdleTimer';
 
 export default function DashboardHeader({PageTitle}) {
+    useIdleTimer();
     const navigate = useNavigate();
     const { user } = useAuth(); // Get user from context
 
