@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from "react";
-import DashboardSideBar from "../components/DashboardSideBar";
-import DashboardHeader from "../components/DashboardHeader";
-import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { NavLink } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import React, { useEffect, useState } from "react";
+import DashboardHeader from "../components/DashboardHeader";
+import DashboardSideBar from "../components/DashboardSideBar";
 
 const Dashboard = () => {
   // Base API URL
@@ -105,7 +105,6 @@ const Dashboard = () => {
           const summaries = res.data.data;
           setHospitalSummaries(res.data.data);
 
-
           let targetSum = 0;
           let paidSum = 0;
           let balanceSum = 0;
@@ -122,7 +121,6 @@ const Dashboard = () => {
           setTotalTarget(targetSum);
           setTotalAmountPaid(paidSum);
           setTotalBalance(balanceSum);
-          // console.log(hospitalSummaries);
         }
       } catch (error) {
         console.error("Error fetching hospital summaries:", error);

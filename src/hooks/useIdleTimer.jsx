@@ -15,10 +15,8 @@ const useIdleTimer = (timeout = 30 * 60 * 1000) => { // 30 minutes
 
   const handleLogout = () => {
     // Clear user auth data (token/session/etc)
-    // localStorage.removeItem('token');
     localStorage.removeItem('military_token');
     localStorage.removeItem('user_data');
-    // You can add additional cleanup logic here
     navigate('/login');
   };
 

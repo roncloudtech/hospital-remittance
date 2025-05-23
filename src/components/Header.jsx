@@ -1,10 +1,9 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import NigerianFlag from "../assets/nigeria-army.png";
-// import useIdleTimer from "../hooks/useIdleTimer";
+
 
 const Header = () => {
-  // useIdleTimer();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
