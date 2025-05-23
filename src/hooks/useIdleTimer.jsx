@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const useIdleTimer = (timeout = 1 * 60 * 1000) => { // 30 minutes
+const useIdleTimer = (timeout = 30 * 60 * 1000) => { // 30 minutes
   const navigate = useNavigate();
   const timerRef = useRef(null);
 

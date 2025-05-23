@@ -94,14 +94,14 @@ const MonthlyTarget = () => {
               <span className="text-sm text-green-600">Total Received</span>
             </div>
 
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-green-100">
-              <h3 className="text-lg font-medium text-green-900">
+            <div className={`bg-white p-6 rounded-lg shadow-sm border border-green-100 ${(totalBalance < 0) ? 'text-red-700 bg-red-300': 'text-black'}`}>
+              <h3 className="text-lg font-medium text-black">
                 Outstanding Balance
               </h3>
-              <p className="text-2xl font-bold mt-2">
+              <p className={`text-2xl font-bold mt-2`}>
                 ₦{totalBalance.toLocaleString()}
               </p>
-              <span className="text-sm text-green-600">
+              <span className="text-sm text-black">
                 Amount Yet to be Paid
               </span>
             </div>
