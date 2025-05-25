@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 const PaystackButton = ({ amt, hospital, email, onSuccess, onClose, refCode }) => {
 
+  const paystackPublicKey = process.env.REACT_APP_PAYSTACK_PUBLIC_KEY || "pk_live_ab3cb58836d37d4f146ab021fdd1252b46d2fa5e";
     useEffect(() => {
     // Load the Paystack script only once
     const script = document.createElement("script");
@@ -11,14 +12,15 @@ const PaystackButton = ({ amt, hospital, email, onSuccess, onClose, refCode }) =
   const payWithPaystack = () => {
     // const ref = `PAYSTACK-${Date.now()}`;
     const handler = window.PaystackPop.setup({
-      key: "pk_test_baecdbe89b4c293f6a4564d49843b1fcd8c937f9",
+      // key: "pk_test_baecdbe89b4c293f6a4564d49843b1fcd8c937f9",
+      key: paystackPublicKey,
       email: email,
       amount: amt * 100,
       currency: "NGN",
       ref: refCode, //ref,
       // ref: refCode, //ref,
       metadata: {
-        hospital_id: hospital
+        hospital_id: hospital,
       },
       callback: (response) => {
         onSuccess(response); // Pass full response to parent
@@ -26,7 +28,7 @@ const PaystackButton = ({ amt, hospital, email, onSuccess, onClose, refCode }) =
       onClose: () => {
         onClose();
         alert("Payment window closed.");
-      }
+      },
     });
 
     handler.openIframe();
