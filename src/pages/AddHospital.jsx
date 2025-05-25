@@ -262,7 +262,7 @@ const AddHospital = () => {
                   </label>
                   <input
                     name="monthly_remittance_target"
-                    type='number'
+                    type='test'
                     min="1"
                     value={formData.monthly_remittance_target}
                     onChange={handleChange}
