@@ -27,7 +27,7 @@ function App() {
       <Routes>
         {/* Public routes */}
         <Route path="/" element={<Home />} />
-        {/* <Route path="/register" element={<Register />} /> */}
+        <Route path="/register" element={<Register />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout/>} />
         <Route path="/unauthorized" element={<Unauthorized />} />
@@ -44,7 +44,7 @@ function App() {
 
         {/* Admin-only routes */}
         <Route element={<AdminRoute />}>
-          <Route path="/register" element={<Register />} />
+          {/* <Route path="/register" element={<Register />} /> */}
           <Route path="/pending-approvals" element={<PendingApprovals/>} />
           <Route path="/manage-users" element={<ManageUsers />}/>
           <Route path="/add-hospital" element={<AddHospital/>} />
