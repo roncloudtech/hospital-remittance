@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 const PaystackButton = ({ amt, hospital, email, onSuccess, onClose, refCode }) => {
 
-  const paystackPublicKey = process.env.REACT_APP_PAYSTACK_PUBLIC_KEY || "pk_live_ab3cb58836d37d4f146ab021fdd1252b46d2fa5e";
+  const paystackPublicKey = process.env.REACT_APP_PAYSTACK_PUBLIC_KEY;
     useEffect(() => {
     // Load the Paystack script only once
     const script = document.createElement("script");
@@ -13,7 +13,7 @@ const PaystackButton = ({ amt, hospital, email, onSuccess, onClose, refCode }) =
     // const ref = `PAYSTACK-${Date.now()}`;
     const handler = window.PaystackPop.setup({
       // key: "pk_test_baecdbe89b4c293f6a4564d49843b1fcd8c937f9",
-      key: paystackPublicKey,
+      key: paystackPublicKey || "pk_test_baecdbe89b4c293f6a4564d49843b1fcd8c937f9",
       email: email,
       amount: amt * 100,
       currency: "NGN",
