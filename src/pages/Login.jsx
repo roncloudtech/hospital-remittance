@@ -63,6 +63,7 @@ const Login = () => {
           password: formData.password,
         }
       );
+      console.log(response);
 
       if (response.status === 200) {
         // Extract both token and user from response
@@ -192,12 +193,12 @@ const Login = () => {
                 </button>
               </div>
 
-              {/* Registration Link */}
+              {/* Password Reset Link */}
               <div className="text-center text-sm">
                 <p className="text-gray-600">
-                  Don't have an account?{" "}
+                  Forget your account password?{" "}
                   <Link
-                    to="/register"
+                    to="/forget-password"
                     className="font-medium text-green-900 hover:text-yellow-400"
                   >
                     Request Access

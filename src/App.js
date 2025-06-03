@@ -2,6 +2,8 @@ import { BrowserRouter, Route, Routes, Navigate, Outlet} from "react-router-dom"
 import { AuthProvider, useAuth } from "./context/AuthContext";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
+import ForgetPassword from "./pages/ForgetPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import AdminRoute from "./components/AdminRoute";
@@ -30,6 +32,8 @@ function App() {
         {/* <Route path="/register" element={<Register />} /> */}
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout/>} />
+        <Route path="/reset-password" element={<ResetPassword />} />
+        <Route path="/forget-password" element={<ForgetPassword />} />
         <Route path="/unauthorized" element={<Unauthorized />} />
         <Route path="/admin/unauthorized" element={<Unauthorized />} />
         <Route path="/user/unauthorized" element={<Unauthorized />} />
