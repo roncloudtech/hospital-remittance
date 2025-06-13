@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import axios from 'axios';
-import DashboardSideBar from '../components/DashboardSideBar';
+import React, { useState, useEffect } from 'react';
 import DashboardHeader from '../components/DashboardHeader';
+import DashboardSideBar from '../components/DashboardSideBar';
 
 const AddHospital = () => {
   // Base API URL
@@ -58,9 +58,11 @@ const AddHospital = () => {
     if (!formData.hospital_name.trim()) {
       newErrors.hospital_name = 'Hospital name is required';
     }
+    
     if (!formData.military_division.trim()) {
       newErrors.military_division = 'Formation is required';
     }
+
     if (!formData.address.trim()) {
       newErrors.address = 'Address is required';
     }
@@ -73,6 +75,7 @@ const AddHospital = () => {
     if (!formData.hospital_remitter) {
       newErrors.hospital_remitter = 'Remitter is required';
     }
+
     // Monthly Remittance Target validation (keep original field name)
     if (!formData.monthly_remittance_target) {
       newErrors.monthly_remittance_target = 'Monthly Remittance Target is required';
@@ -120,6 +123,7 @@ const AddHospital = () => {
       [e.target.name]: e.target.value
     });
   };
+
 
   return (
     <div className="min-h-screen bg-gray-50">

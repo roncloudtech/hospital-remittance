@@ -31,19 +31,28 @@ const Register = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.firstName.trim())
-      newErrors.firstName = "First name is required";
+
+    // Firstname Validation
+    if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
+
+    // Lastname Validation
     if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+
+    // E-mail Validation
     if (!formData.email.trim()) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Invalid email address";
     }
+
+    // Password Validation
     if (!formData.password) {
       newErrors.password = "Password is required";
     } else if (formData.password.length < 8) {
       newErrors.password = "Password must be at least 8 characters";
     }
+
+    // Phone Number Validation
     if (
       formData.phoneNumber &&
       !/^\+234[789][01]\d{8}$|^0[789][01]\d{8}$/.test(formData.phoneNumber)
@@ -51,6 +60,7 @@ const Register = () => {
       newErrors.phoneNumber = "Invalid phone number format";
     }
 
+    // User Role Validation
     if (!formData.role) {
       newErrors.role = "Role is required";
     }
