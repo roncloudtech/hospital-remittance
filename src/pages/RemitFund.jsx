@@ -12,6 +12,7 @@ const RemitFund = () => {
   const { authToken, user } = useAuth();
   const navigate = useNavigate();
   const [hospitals, setHospitals] = useState([]);
+  const [evidenceFile, setEvidenceFile] = useState(null);
   const uniqueRef = `PAYSTACK_${Date.now()}`;
   const [formData, setFormData] = useState({
     hospital_id: "",
@@ -74,6 +75,11 @@ const RemitFund = () => {
       newErrors.amount = "Valid amount is required";
     }
 
+    if (formData.payment_method === "Bank Deposit" && !evidenceFile) {
+      newErrors.payment_evidence = "Payment evidence is required for Bank Deposit.";
+    }
+
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -134,21 +140,44 @@ const RemitFund = () => {
     } else {
         setLoading(true);
         try {
-          const payload = {
-            ...formData,
-            amount: parseFloat(formData.amount),
-            remitter_id: user.id,
-            payment_status: "pending",
-            // payment_reference: uniqueRef, //`BANK-${Date.now()}`,
-            payment_reference: `BANK-${Date.now()}`,
-          };
+          // const payload = {
+          //   ...formData,
+          //   amount: parseFloat(formData.amount),
+          //   remitter_id: user.id,
+          //   payment_status: "pending",
+          //   // payment_reference: uniqueRef, //`BANK-${Date.now()}`,
+          //   payment_reference: `BANK-${Date.now()}`,
+          // };
     
-          await axios.post(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/remittances`, payload, {
-            headers: {
-              Authorization: `Bearer ${authToken}`,
-            },
-          });
-    
+          // await axios.post(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/remittances`, payload, {
+          //   headers: {
+          //     Authorization: `Bearer ${authToken}`,
+          //   },
+          // });
+          
+          const form = new FormData();
+          form.append("hospital_id", formData.hospital_id);
+          form.append("amount", parseFloat(formData.amount));
+          form.append("payment_method", formData.payment_method);
+          form.append("payment_status", "pending");
+          form.append("payment_reference", `BANK-${Date.now()}`);
+          form.append("transaction_date", formData.transaction_date);
+          form.append("description", formData.description || "");
+          if (evidenceFile) {
+            form.append("payment_evidence", evidenceFile);
+          }
+
+          await axios.post(
+            `${API_BASE_URL || 'http://localhost:8000/api'}/remittances`,
+            form,
+            {
+              headers: {
+                Authorization: `Bearer ${authToken}`,
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+
           navigate("/dashboard");
         } catch (error) {
           setErrors(
@@ -283,6 +312,30 @@ const RemitFund = () => {
                   placeholder="Optional transaction description"
                 />
               </div>
+
+              {/* Payment Evidence File */}
+              {formData.payment_method === "Bank Deposit" && (
+                <div>
+                  <label className="block text-sm font-medium text-green-900 mb-1">
+                    Upload Payment Evidence (PDF, JPG, PNG)
+                  </label>
+                  <input
+                    type="file"
+                    name="payment_evidence"
+                    accept=".jpg,.jpeg,.png,.pdf"
+                    onChange={(e) => setEvidenceFile(e.target.files[0])}
+                    className={`w-full border rounded-md px-3 py-2 ${
+                      errors.payment_evidence ? "border-red-500" : "border-gray-300"
+                    }`}
+                  />
+                  {errors.payment_evidence && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {errors.payment_evidence}
+                    </p>
+                  )}
+                </div>
+              )}
+
 
               {/* Submit or Paystack Button */}
               {formData.payment_method === "Paystack" ? (

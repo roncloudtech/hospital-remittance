@@ -12,6 +12,8 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const [pendingTransactions, setPendingTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [actionLoading, setActionLoading] = useState(false);
+  const [previewUrl, setPreviewUrl] = useState(null);
+
 
   useEffect(() => {
     const fetchPending = async () => {
@@ -23,10 +25,12 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
           },
         });
 
+        console.log(res.data.data.data)
         if (res.data.success) {
           const pending = res.data.data.data.filter(
             (tx) => tx.payment_status?.toLowerCase() === 'pending'
           );
+          
           setPendingTransactions(pending);
         }
       } catch (error) {
@@ -64,6 +68,13 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
     }
   };
 
+  const handlePreview = (evidenceUrl) => {
+    console.log(evidenceUrl);
+    if (!evidenceUrl) return alert("No payment evidence available.");
+    const fullUrl = `${API_BASE_URL || 'http://localhost:8000'}/storage/${evidenceUrl}`;
+    setPreviewUrl(fullUrl);
+  };
+
   if (user?.role !== 'admin') {
     return <Navigate to="/" />;
   }
@@ -92,6 +103,7 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
                       <th className="pb-3">Hospital</th>
                       <th className="pb-3">Amount</th>
                       <th className="pb-3">Status</th>
+                      <th className="pb-3">Evidence</th>
                       <th className="pb-3">Action</th>
                     </tr>
                   </thead>
@@ -108,6 +120,21 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
                             Pending
                           </span>
                         </td>
+
+                        <td>
+                          {tx.payment_evidence ? (
+                            
+                            <button
+                              onClick={() => handlePreview(tx.payment_evidence)}
+                              className="text-blue-600 underline hover:text-blue-800 text-sm"
+                            >
+                              Preview
+                            </button>
+                          ) : (
+                            <span className="text-gray-400 text-sm">No file</span>
+                          )}
+                        </td>
+
                         <td className="flex gap-2 py-2">
                           <button
                             onClick={() => handleAction(tx.id, 'success')}
@@ -133,6 +160,33 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
           </div>
         </main>
       </div>
+
+      {previewUrl && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-4 rounded-lg max-w-3xl w-full relative">
+            <button
+              onClick={() => setPreviewUrl(null)}
+              className="absolute top-2 right-2 text-gray-600 hover:text-black"
+            >
+              ✕
+            </button>
+            {previewUrl.endsWith('.pdf') ? (
+              <iframe
+                src={previewUrl}
+                className="w-full h-[500px] border rounded"
+                title="PDF Preview"
+              />
+            ) : (
+              <img
+                src={previewUrl}
+                alt="Evidence Preview"
+                className="w-full max-h-[500px] object-contain rounded"
+              />
+            )}
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };
