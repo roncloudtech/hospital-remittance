@@ -180,6 +180,7 @@ const RemitFund = () => {
 
           navigate("/dashboard");
         } catch (error) {
+          console.log(error);
           setErrors(
             error.response?.data?.errors || { general: "Submission failed" }
           );
