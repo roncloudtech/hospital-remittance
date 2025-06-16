@@ -7,7 +7,7 @@ import { Navigate } from 'react-router-dom';
 
 const PendingApprovals = () => {
   // Base API URL
-  const API_PUBLIC_URL = "https://api.nafcservices.com.ng";
+  const API_PUBLIC_URL = "https://hosapi.nafcservices.com.ng";
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const { user, authToken } = useAuth();
   const [pendingTransactions, setPendingTransactions] = useState([]);
