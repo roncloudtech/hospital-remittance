@@ -7,6 +7,7 @@ import { Navigate } from 'react-router-dom';
 
 const PendingApprovals = () => {
   // Base API URL
+  const API_PUBLIC_URL = "https://api.nafcservices.com.ng";
 const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const { user, authToken } = useAuth();
   const [pendingTransactions, setPendingTransactions] = useState([]);
@@ -71,7 +72,7 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const handlePreview = (evidenceUrl) => {
     console.log(evidenceUrl);
     if (!evidenceUrl) return alert("No payment evidence available.");
-    const fullUrl = `${API_BASE_URL || 'http://localhost:8000'}/storage/${evidenceUrl}`;
+    const fullUrl = `${API_PUBLIC_URL || 'http://localhost:8000'}/storage/${evidenceUrl}`;
     setPreviewUrl(fullUrl);
   };
 
@@ -126,7 +127,7 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
                             
                             <button
                               onClick={() => handlePreview(tx.payment_evidence)}
-                              className="text-blue-600 underline hover:text-blue-800 text-sm"
+                              className="px-3 py-1 bg-blue-600 text-white rounded hover:text-blue-800 text-sm"
                             >
                               Preview
                             </button>
