@@ -8,7 +8,6 @@ import { Eye } from "lucide-react";
 
 const AdminReports = () => {
   const { authToken, user } = useAuth();
-  // const API_PUBLIC_URL = "https://api.namm.com.ng";
   const API_PUBLIC_URL = "https://hosapi.nafcservices.com.ng";
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api";
 
@@ -87,72 +86,6 @@ const AdminReports = () => {
       </span>
     );
   };
-
-  // const renderTicketCard = (ticket) => {
-  //   const disableClose = ticket.status === "resolved" && isOlderThan24Hours(ticket.updated_at);
-
-  //   return (
-  //     <div key={ticket.id} className="bg-white shadow-md rounded-lg p-5 border border-gray-200 mb-4 w-64">
-  //       <div className="mb-3">
-  //         <h3 className="text-lg font-semibold text-gray-800">{ticket.subject}</h3>
-  //         <p className="text-sm text-gray-500">{getUserEmail(ticket.user_id)}</p>
-  //       </div>
-  //       <p className="mb-2 text-gray-700">
-  //         <span className="font-medium">Message:</span> {ticket.message}
-  //       </p>
-  //       <div className="mb-2">
-  //         <span className="font-medium">Evidence:</span>{" "}
-  //         {ticket.evidence_path ? (
-  //           <a
-  //             href={`${API_PUBLIC_URL}/storage/${ticket.evidence_path}`}
-  //             target="_blank"
-  //             rel="noopener noreferrer"
-  //             className="inline-flex items-center gap-1 mt-1 text-blue-600 font-medium hover:underline"
-  //           >
-  //             <Eye size={16} /> View Evidence
-  //           </a>
-  //         ) : (
-  //           <span className="text-gray-500">None</span>
-  //         )}
-  //       </div>
-  //       <p className="mb-1 text-sm text-gray-600">
-  //         <strong>Reported:</strong> {timeAgo(ticket.created_at)}
-  //       </p>
-  //       {ticket.status !== "open" && (
-  //         <p className="mb-1 text-sm text-gray-600">
-  //           <strong>Resolved/Closed:</strong> {timeAgo(ticket.updated_at)}
-  //         </p>
-  //       )}
-  //       <p className="mb-4">
-  //         <span className="font-medium">Status:</span> {renderStatusBadge(ticket.status)}
-  //       </p>
-  //       <div className="flex space-x-3">
-  //         <button
-  //           onClick={() => updateStatus(ticket.id, "resolved")}
-  //           className={`flex-1 text-sm px-3 py-2 rounded ${
-  //             ticket.status !== "open"
-  //               ? "bg-gray-300 cursor-not-allowed text-white"
-  //               : "bg-green-600 text-white hover:bg-green-700"
-  //           }`}
-  //           disabled={ticket.status !== "open"}
-  //         >
-  //           Resolve
-  //         </button>
-  //         <button
-  //           onClick={() => updateStatus(ticket.id, "closed")}
-  //           className={`flex-1 text-sm px-3 py-2 rounded ${
-  //             disableClose
-  //               ? "bg-gray-300 cursor-not-allowed text-white"
-  //               : "bg-gray-600 text-white hover:bg-gray-700"
-  //           }`}
-  //           disabled={disableClose}
-  //         >
-  //           Close
-  //         </button>
-  //       </div>
-  //     </div>
-  //   );
-  // };
   const renderTicketCard = (ticket) => {
     const disableClose = ticket.status === "resolved" && isOlderThan24Hours(ticket.updated_at);
   

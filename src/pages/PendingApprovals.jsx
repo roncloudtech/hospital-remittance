@@ -26,7 +26,7 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
           },
         });
 
-        console.log(res.data.data.data)
+        // console.log(res.data.data.data)
         if (res.data.success) {
           const pending = res.data.data.data.filter(
             (tx) => tx.payment_status?.toLowerCase() === 'pending'
@@ -70,11 +70,11 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   };
 
   const handlePreview = (evidenceUrl) => {
-    console.log(evidenceUrl);
+    // console.log(evidenceUrl);
     if (!evidenceUrl) return alert("No payment evidence available.");
     const fullUrl = `${API_BASE_URL ? API_PUBLIC_URL + '/storage' : 'http://localhost:8000/storage'}/${evidenceUrl}`;
     setPreviewUrl(fullUrl);
-    console.log(fullUrl);
+    // console.log(fullUrl);
   };
 
   if (user?.role !== 'admin') {
