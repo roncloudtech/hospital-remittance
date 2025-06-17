@@ -9,7 +9,7 @@ import { Eye } from "lucide-react";
 const AdminReports = () => {
   const { authToken, user } = useAuth();
   // const API_PUBLIC_URL = "https://api.namm.com.ng";
-  const API_PUBLIC_URL = "https://api.nafcservices.com.ng";
+  const API_PUBLIC_URL = "https://hosapi.nafcservices.com.ng";
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000/api";
 
   const [tickets, setTickets] = useState([]);
