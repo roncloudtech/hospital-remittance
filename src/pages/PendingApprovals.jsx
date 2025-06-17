@@ -72,7 +72,7 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const handlePreview = (evidenceUrl) => {
     console.log(evidenceUrl);
     if (!evidenceUrl) return alert("No payment evidence available.");
-    const fullUrl = `${API_PUBLIC_URL || 'http://localhost:8000'}/storage/app/public/${evidenceUrl}`;
+    const fullUrl = `${API_BASE_URL ? API_PUBLIC_URL + '/storage' : 'http://localhost:8000/storage'}/${evidenceUrl}`;
     setPreviewUrl(fullUrl);
     console.log(fullUrl);
   };
