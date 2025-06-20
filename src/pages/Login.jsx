@@ -9,7 +9,7 @@ import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/outline";
 const Login = () => {
   // Base API URL
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
-  console.log(API_BASE_URL);
+  // console.log(API_BASE_URL);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -64,7 +64,7 @@ const Login = () => {
           password: formData.password,
         }
       );
-      console.log(response);
+      // console.log(response);
 
       if (response.status === 200) {
         // Extract both token and user from response
