@@ -21,6 +21,7 @@ import OpenTicket from "./pages/OpenTicket";
 import AdminReports from "./pages/AdminReports";
 import RemitterReports from "./pages/RemitterReports";
 import MonthlyTarget from "./pages/MonthlyTarget";
+import EditUser from "./pages/EditUser";
 
 // Main application component
 function App() {
@@ -49,6 +50,7 @@ function App() {
         {/* Admin-only routes */}
         <Route element={<AdminRoute />}>
           <Route path="/register" element={<Register />} />
+          <Route path="/edit-user" element={<EditUser/> } />
           <Route path="/pending-approvals" element={<PendingApprovals/>} />
           <Route path="/manage-users" element={<ManageUsers />}/>
           <Route path="/add-hospital" element={<AddHospital/>} />
