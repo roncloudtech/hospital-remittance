@@ -153,15 +153,77 @@ const AddHospital = () => {
     });
   };
 
-  const formatNumberWithCommas = (number) => {
-    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  // Enhanced amount formatting with kobo support
+  const formatAmountWithCommas = (value) => {
+    if (value === "") return "";
+    
+    // Handle decimal values
+    const [integerPart, decimalPart] = value.split('.');
+    let formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    
+    // Add decimal part if exists
+    if (decimalPart !== undefined) {
+      return `${formattedInteger}.${decimalPart.substring(0, 2)}`;
+    }
+    return formattedInteger;
   };
 
-  const numberToWords = (num) => {
+  const handleMonthlyTargetChange = (e) => {
+    const inputValue = e.target.value;
+    // Remove commas and non-numeric characters except decimal point
+    let rawValue = inputValue.replace(/,/g, '').replace(/[^0-9.]/g, '');
+    
+    // Prevent multiple decimal points
+    const decimalCount = (rawValue.match(/\./g) || []).length;
+    if (decimalCount > 1) {
+      rawValue = rawValue.substring(0, rawValue.lastIndexOf('.'));
+    }
+    
+    // Split into integer and decimal parts
+    const [integerPart, decimalPart] = rawValue.split('.');
+    
+    // Reconstruct value with proper decimal handling
+    let newValue = integerPart || '';
+    if (decimalPart !== undefined) {
+      newValue += `.${decimalPart.substring(0, 2)}`;
+    }
+    
+    setFormData({ 
+      ...formData, 
+      monthly_remittance_target: newValue 
+    });
+  };
+
+  // Enhanced number to words with kobo
+  const numberToWords = (amountStr) => {
+    if (!amountStr || amountStr.trim() === "") return "";
+    
+    const amount = parseFloat(amountStr);
+    if (isNaN(amount)) return "";
+    
     const toWords = require("number-to-words").toWords;
-    return (
-      toWords(Number(num)).replace(/\b\w/g, (l) => l.toUpperCase()) + " Naira"
-    );
+    
+    // Split into naira and kobo
+    const naira = Math.floor(amount);
+    const kobo = Math.round((amount - naira) * 100);
+    
+    let words = "";
+    
+    // Convert naira part
+    if (naira > 0) {
+      words = toWords(naira).replace(/\b\w/g, (l) => l.toUpperCase()) + " Naira";
+    }
+    
+    // Convert kobo part
+    if (kobo > 0) {
+      if (words) words += " and ";
+      words += toWords(kobo).replace(/\b\w/g, (l) => l.toUpperCase()) + " Kobo";
+    }
+    
+    // Handle zero amount
+    if (!words) words = "Zero Naira";
+    
+    return words;
   };
 
   return (
@@ -326,24 +388,15 @@ const AddHospital = () => {
                   <input
                     name="monthly_remittance_target"
                     type="text"
-                    inputMode="numeric"
-                    value={formatNumberWithCommas(
-                      formData.monthly_remittance_target.replace(/,/g, "")
-                    )}
-                    onChange={(e) => {
-                      const raw = e.target.value
-                        .replace(/,/g, "")
-                        .replace(/\D/g, "");
-                      setFormData({
-                        ...formData,
-                        monthly_remittance_target: raw,
-                      });
-                    }}
+                    maxLength={"20"}
+                    value={formatAmountWithCommas(formData.monthly_remittance_target)}
+                    onChange={handleMonthlyTargetChange}
                     className={`w-full px-3 py-2 border rounded-md ${
                       errors.monthly_remittance_target
                         ? "border-red-500"
                         : "border-gray-300"
                     } focus:ring-yellow-400 focus:border-yellow-400`}
+                    placeholder="Enter amount"
                   />
                   {errors.monthly_remittance_target && (
                     <p className="text-red-500 text-sm mt-1">
@@ -358,28 +411,6 @@ const AddHospital = () => {
                     </span>
                   )}
                 </div>
-                {/* <div>
-                  <label className="block text-sm font-medium text-green-900 mb-1">
-                    Monthly Remittance Target
-                  </label>
-                  <input
-                    name="monthly_remittance_target"
-                    type="test"
-                    min="1"
-                    value={formData.monthly_remittance_target}
-                    onChange={handleChange}
-                    className={`w-full px-3 py-2 border rounded-md ${
-                      errors.monthly_remittance_target
-                        ? "border-red-500"
-                        : "border-gray-300"
-                    } focus:ring-yellow-400 focus:border-yellow-400`}
-                  />
-                  {errors.monthly_remittance_target && (
-                    <p className="text-red-500 text-sm mt-1">
-                      {errors.monthly_remittance_target}
-                    </p>
-                  )}
-                </div> */}
               </div>
 
               {/* Submit Button */}

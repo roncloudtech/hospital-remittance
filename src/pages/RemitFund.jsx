@@ -33,7 +33,9 @@ const RemitFund = () => {
     const fetchHospitals = async () => {
       try {
         const response = await axios.get(
-          `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/my-hospitals`,
+          `${
+            API_BASE_URL ? API_BASE_URL : "http://localhost:8000/api"
+          }/my-hospitals`,
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -76,9 +78,9 @@ const RemitFund = () => {
     }
 
     if (formData.payment_method === "Bank Deposit" && !evidenceFile) {
-      newErrors.payment_evidence = "Payment evidence is required for Bank Deposit.";
+      newErrors.payment_evidence =
+        "Payment evidence is required for Bank Deposit.";
     }
-
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -94,6 +96,128 @@ const RemitFund = () => {
   // ✅ Merged: Handle Paystack Success
   const [paystackSubmitted, setPaystackSubmitted] = useState(false);
 
+  // // const formatAmountWithCommas = (value) => {
+  // //   const cleanValue = value.replace(/[^\d.]/g, "");
+  // //   let [whole, decimal] = cleanValue.split(".");
+
+  // //   if (whole) {
+  // //     whole = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  // //   }
+
+  // //   return decimal ? `${whole}.${decimal.substring(0, 2)}` : whole;
+  // // };
+
+  // // const handleAmountChange = (e) => {
+  // //   const rawValue = e.target.value.replace(/,/g, "");
+  // //   setFormData({ ...formData, amount: rawValue });
+  // // };
+
+  // // const formatNumberWithCommas = (number) => {
+  // //   return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  // // };
+
+  // // New helper functions for amount formatting
+  // const formatAmountWithCommas = (value) => {
+  //   // Remove all non-digit characters except decimal point
+  //   const cleanValue = value.replace(/[^\d.]/g, '');
+    
+  //   // Split into whole and decimal parts
+  //   let [whole, decimal] = cleanValue.split('.');
+    
+  //   // Add thousand separators to whole number part
+  //   if (whole) {
+  //     whole = whole.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  //   }
+    
+  //   // Combine parts (limit decimal to 2 places)
+  //   return decimal ? `${whole}.${decimal.substring(0, 2)}` : whole;
+  // };
+
+   // Enhanced amount formatting with kobo support
+  const formatAmountWithCommas = (value) => {
+    if (value === "") return "";
+    
+    // Handle decimal values
+    const [integerPart, decimalPart] = value.split('.');
+    let formattedInteger = integerPart.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    
+    // Add decimal part if exists
+    if (decimalPart !== undefined) {
+      return `${formattedInteger}.${decimalPart.substring(0, 2)}`;
+    }
+    return formattedInteger;
+  };
+
+  const handleAmountChange = (e) => {
+    const inputValue = e.target.value;
+    // Remove commas and non-numeric characters except decimal point
+    let rawValue = inputValue.replace(/,/g, '').replace(/[^0-9.]/g, '');
+    
+    // Prevent multiple decimal points
+    const decimalCount = (rawValue.match(/\./g) || []).length;
+    if (decimalCount > 1) {
+      rawValue = rawValue.substring(0, rawValue.lastIndexOf('.'));
+    }
+    
+    // Split into integer and decimal parts
+    const [integerPart, decimalPart] = rawValue.split('.');
+    
+    // Reconstruct value with proper decimal handling
+    let newValue = integerPart || '';
+    if (decimalPart !== undefined) {
+      newValue += `.${decimalPart.substring(0, 2)}`;
+    }
+    
+    setFormData({ ...formData, amount: newValue });
+  };
+
+  // Enhanced number to words with kobo
+  const numberToWords = (amountStr) => {
+    if (!amountStr || amountStr.trim() === "") return "";
+    
+    const amount = parseFloat(amountStr);
+    if (isNaN(amount)) return "";
+    
+    const toWords = require("number-to-words").toWords;
+    
+    // Split into naira and kobo
+    const naira = Math.floor(amount);
+    const kobo = Math.round((amount - naira) * 100);
+    
+    let words = "";
+    
+    // Convert naira part
+    if (naira > 0) {
+      words = toWords(naira).replace(/\b\w/g, (l) => l.toUpperCase()) + " Naira";
+    }
+    
+    // Convert kobo part
+    if (kobo > 0) {
+      if (words) words += " and ";
+      words += toWords(kobo).replace(/\b\w/g, (l) => l.toUpperCase()) + " Kobo";
+    }
+    
+    // Handle zero amount
+    if (!words) words = "Zero Naira";
+    
+    return words;
+  };
+
+  // const handleAmountChange = (e) => {
+  //   const rawValue = e.target.value.replace(/,/g, '');
+  //   setFormData({
+  //     ...formData,
+  //     amount: rawValue
+  //   });
+  // };
+
+  // const numberToWords = (num) => {
+  //   const toWords = require("number-to-words").toWords;
+  //   return (
+  //     toWords(Number(num)).replace(/\b\w/g, (l) => l.toUpperCase()) + " Naira"
+  //   );
+  // };
+
   const handlePaystackSuccess = async (response) => {
     if (paystackSubmitted) return;
     setPaystackSubmitted(true);
@@ -101,7 +225,9 @@ const RemitFund = () => {
     try {
       setLoading(true);
       const res = await axios.post(
-        `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/remittances`,
+        `${
+          API_BASE_URL ? API_BASE_URL : "http://localhost:8000/api"
+        }/remittances`,
         {
           ...formData,
           amount: parseFloat(formData.amount),
@@ -135,61 +261,60 @@ const RemitFund = () => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    if(formData.payment_method === "Paystack") {
+    if (formData.payment_method === "Paystack") {
       return;
     } else {
-        setLoading(true);
-        try {
-          // const payload = {
-          //   ...formData,
-          //   amount: parseFloat(formData.amount),
-          //   remitter_id: user.id,
-          //   payment_status: "pending",
-          //   // payment_reference: uniqueRef, //`BANK-${Date.now()}`,
-          //   payment_reference: `BANK-${Date.now()}`,
-          // };
-    
-          // await axios.post(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/remittances`, payload, {
-          //   headers: {
-          //     Authorization: `Bearer ${authToken}`,
-          //   },
-          // });
-          
-          const form = new FormData();
-          form.append("hospital_id", formData.hospital_id);
-          form.append("amount", parseFloat(formData.amount));
-          form.append("payment_method", formData.payment_method);
-          form.append("payment_status", "pending");
-          form.append("payment_reference", `BANK-${Date.now()}`);
-          form.append("transaction_date", formData.transaction_date);
-          form.append("description", formData.description || "");
-          if (evidenceFile) {
-            form.append("payment_evidence", evidenceFile);
-          }
+      setLoading(true);
+      try {
+        // const payload = {
+        //   ...formData,
+        //   amount: parseFloat(formData.amount),
+        //   remitter_id: user.id,
+        //   payment_status: "pending",
+        //   // payment_reference: uniqueRef, //`BANK-${Date.now()}`,
+        //   payment_reference: `BANK-${Date.now()}`,
+        // };
 
-          await axios.post(
-            `${API_BASE_URL || 'http://localhost:8000/api'}/remittances`,
-            form,
-            {
-              headers: {
-                Authorization: `Bearer ${authToken}`,
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
+        // await axios.post(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/remittances`, payload, {
+        //   headers: {
+        //     Authorization: `Bearer ${authToken}`,
+        //   },
+        // });
 
-          navigate("/dashboard");
-        } catch (error) {
-          console.log(error);
-          setErrors(
-            error.response?.data?.errors || { general: "Submission failed" }
-          );
-        } finally {
-          setLoading(false);
+        const form = new FormData();
+        form.append("hospital_id", formData.hospital_id);
+        form.append("amount", parseFloat(formData.amount));
+        form.append("payment_method", formData.payment_method);
+        form.append("payment_status", "pending");
+        form.append("payment_reference", `BANK-${Date.now()}`);
+        form.append("transaction_date", formData.transaction_date);
+        form.append("description", formData.description || "");
+        if (evidenceFile) {
+          form.append("payment_evidence", evidenceFile);
         }
-      };
-    }
 
+        await axios.post(
+          `${API_BASE_URL || "http://localhost:8000/api"}/remittances`,
+          form,
+          {
+            headers: {
+              Authorization: `Bearer ${authToken}`,
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        navigate("/dashboard");
+      } catch (error) {
+        console.log(error);
+        setErrors(
+          error.response?.data?.errors || { general: "Submission failed" }
+        );
+      } finally {
+        setLoading(false);
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -265,26 +390,34 @@ const RemitFund = () => {
 
               {/* Amount and Date */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                  <label className="block text-sm font-medium text-green-900 mb-1">
-                    Amount (₦)
-                  </label>
-                  <input
-                    type="number"
-                    name="amount"
-                    step="0.01"
-                    value={formData.amount}
-                    onChange={handleChange}
-                    className={`w-full px-3 py-2 border rounded-md ${
-                      errors.amount ? "border-red-500" : "border-gray-300"
-                    } focus:ring-yellow-400 focus:border-yellow-400`}
-                    placeholder="Enter amount"
-                  />
-                  {errors.amount && (
-                    <p className="text-red-500 text-sm mt-1">{errors.amount}</p>
-                  )}
-                </div>
 
+                <div>
+                <label className="block text-sm font-medium text-green-900 mb-1">
+                  Amount (₦)
+                </label>
+                <input
+                  type="text"  // Changed to text type
+                  name="amount"
+                  value={formatAmountWithCommas(formData.amount)}
+                  onChange={handleAmountChange}
+                  maxLength={"20"}
+                  className={`w-full px-3 py-2 border rounded-md ${
+                    errors.amount ? "border-red-500" : "border-gray-300"
+                  } focus:ring-yellow-400 focus:border-yellow-400`}
+                  placeholder="Enter amount"
+                />
+                {errors.amount && (
+                  <p className="text-red-500 text-sm mt-1">{errors.amount}</p>
+                )}
+
+                {formData.amount && (
+                  <span className="text-sm text-gray-600 mt-1 block italic">
+                    {numberToWords(formData.amount)}
+                  </span>
+                )}
+              </div>
+
+                {/* Transaction Date */}
                 <div>
                   <label className="block text-sm font-medium text-green-900 mb-1">
                     Transaction Date
@@ -326,7 +459,9 @@ const RemitFund = () => {
                     accept=".jpg,.jpeg,.png,.pdf"
                     onChange={(e) => setEvidenceFile(e.target.files[0])}
                     className={`w-full border rounded-md px-3 py-2 ${
-                      errors.payment_evidence ? "border-red-500" : "border-gray-300"
+                      errors.payment_evidence
+                        ? "border-red-500"
+                        : "border-gray-300"
                     }`}
                   />
                   {errors.payment_evidence && (
@@ -336,7 +471,6 @@ const RemitFund = () => {
                   )}
                 </div>
               )}
-
 
               {/* Submit or Paystack Button */}
               {formData.payment_method === "Paystack" ? (
