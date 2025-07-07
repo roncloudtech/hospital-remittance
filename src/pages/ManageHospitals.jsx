@@ -7,7 +7,7 @@ import DashboardHeader from "../components/DashboardHeader";
 
 const ManageHospitals = () => {
   // Base API URL
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const { authToken, user } = useAuth();
   const navigate = useNavigate();
   const [hospitals, setHospitals] = useState([]);
@@ -25,7 +25,9 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
       try {
         setLoading(true);
         const response = await axios.get(
-          `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/gethospitals`,
+          `${
+            API_BASE_URL ? API_BASE_URL : "http://localhost:8000/api"
+          }/gethospitals`,
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -43,11 +45,12 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
     fetchHospitals();
   }, [authToken, navigate, user, API_BASE_URL]);
 
+
   return (
     <div className="min-h-screen bg-gray-50">
       <DashboardSideBar />
       <div className="md:ml-64 p-6">
-        <DashboardHeader PageTitle="Manage Hospitals"/>
+        <DashboardHeader PageTitle="Manage Hospitals" />
 
         <div className="max-w-7xl mx-auto">
           {/* Add Hospital Form */}
@@ -55,9 +58,14 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
             <h2 className="text-lg font-medium text-green-900 mb-4">
               Add New Hospital
             </h2>
-              <Link to="/add-hospital" className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
-                  loading ? "bg-gray-400" : "bg-green-900 hover:bg-green-800"
-                } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400`}>Add Hospital</Link>
+            <Link
+              to="/add-hospital"
+              className={`inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white ${
+                loading ? "bg-gray-400" : "bg-green-900 hover:bg-green-800"
+              } focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-yellow-400`}
+            >
+              Add Hospital
+            </Link>
           </div>
 
           {/* Hospitals List */}
@@ -106,10 +114,16 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
                             {hospital.military_division}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {hospital.monthly_remittance_target ? "₦"+ hospital.monthly_remittance_target.toLocaleString() : "No Target"}
+                            {hospital.monthly_remittance_target
+                              ? "₦" +
+                                hospital.monthly_remittance_target.toLocaleString()
+                              : "No Target"}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm">
-                            <NavLink to={`/edit-hospital?id=${hospital.id}`} className="text-yellow-600 hover:text-yellow-900 mr-4">
+                            <NavLink
+                              to={`/edit-hospital?id=${hospital.id}`}
+                              className="text-yellow-600 hover:text-yellow-900 mr-4"
+                            >
                               Edit
                             </NavLink>
                             <button className="text-red-600 hover:text-red-900">

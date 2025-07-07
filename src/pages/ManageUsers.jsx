@@ -24,7 +24,9 @@ const ManageUsers = () => {
       try {
         setLoading(true);
         const response = await axios.get(
-          `${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000/api'}/getusers`,
+          `${
+            API_BASE_URL ? API_BASE_URL : "http://localhost:8000/api"
+          }/getusers`,
           {
             headers: {
               Authorization: `Bearer ${authToken}`,
@@ -41,6 +43,63 @@ const ManageUsers = () => {
 
     fetchUsers();
   }, [authToken, navigate, user, API_BASE_URL]);
+  // Disable (soft-delete) user
+  const handleDelete = async (id, email) => {
+    if (!window.confirm("Are you sure you want to disable this user? " + email))
+      return;
+
+    try {
+      await axios.delete(
+        `${
+          API_BASE_URL ? API_BASE_URL : "http://localhost:8000/api"
+        }/users/delete/${id}`,
+        {
+          headers: { Authorization: `Bearer ${authToken}` },
+        }
+      );
+      alert("User disabled successfully");
+
+      // Refresh user list
+      const response = await axios.get(
+        `${API_BASE_URL ? API_BASE_URL : "http://localhost:8000/api"}/getusers`,
+        {
+          headers: { Authorization: `Bearer ${authToken}` },
+        }
+      );
+      setUsers(response.data);
+    } catch (err) {
+      alert("Failed to disable user");
+    }
+  };
+
+  // Restore user
+  const handleRestore = async (id, email) => {
+    if (!window.confirm("Do you want to restore this user? " + email)) return;
+
+    try {
+      await axios.put(
+        `${
+          API_BASE_URL ? API_BASE_URL : "http://localhost:8000/api"
+        }/users/restore/${id}`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${authToken}` },
+        }
+      );
+      alert("User restored successfully");
+
+      // Refresh user list
+      const response = await axios.get(
+        `${API_BASE_URL ? API_BASE_URL : "http://localhost:8000/api"}/getusers`,
+        {
+          headers: { Authorization: `Bearer ${authToken}` },
+        }
+      );
+      setUsers(response.data);
+    } catch (err) {
+      alert("Failed to restore user");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -108,13 +167,31 @@ const ManageUsers = () => {
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm">
                             <button className="text-yellow-600 hover:text-yellow-900 mr-4">
-                              <NavLink to={`/edit-user?id=${user.id}`} className="text-yellow-600 hover:text-yellow-900 mr-4">
-                              Edit
-                            </NavLink>
+                              <NavLink
+                                to={`/edit-user?id=${user.id}`}
+                                className="text-yellow-600 hover:text-yellow-900 mr-4"
+                              >
+                                Edit
+                              </NavLink>
                             </button>
-                            <button className="text-red-600 hover:text-red-900">
+                            {/* <button className="text-red-600 hover:text-red-900">
                               Delete
-                            </button>
+                            </button> */}
+                            {user.deleted_at ? (
+                              <button
+                                onClick={() => handleRestore(user.id, user.email)}
+                                className="text-blue-600 hover:text-blue-900"
+                              >
+                                Restore
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() => handleDelete(user.id, user.email)}
+                                className="text-red-600 hover:text-red-900"
+                              >
+                                Delete
+                              </button>
+                            )}
                           </td>
                         </tr>
                       ))}
