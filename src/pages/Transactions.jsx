@@ -134,6 +134,7 @@ const Transactions = () => {
               <option value="">All Status</option>
               <option value="success">Success</option>
               <option value="pending">Pending</option>
+              <option value="decline">decline</option>
             </select>
 
             <div className="flex gap-2 items-center">
