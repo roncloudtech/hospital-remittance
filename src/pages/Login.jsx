@@ -50,11 +50,6 @@ const Login = () => {
     try {
       // First get CSRF cookie
       // await axios.get(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000'}/sanctum/csrf-cookie`);
-      // await axios.get(
-      //   `${
-      //     API_BASE_URL ? "https://api.namm.com.ng" : "http://localhost:8000"
-      //   }/sanctum/csrf-cookie`
-      // );
       await axios.get(
         `${
           API_BASE_URL ? "https://www.nafcservices.com.ng" : "http://localhost:8000"
