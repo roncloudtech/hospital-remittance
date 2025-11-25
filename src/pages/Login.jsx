@@ -31,7 +31,7 @@ const Login = () => {
   const validateForm = () => {
     const newErrors = {};
     if (!formData.email.trim()) {
-      newErrors.email = "Military email is required";
+      newErrors.email = "E-mail is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Invalid email address";
     }
@@ -50,9 +50,14 @@ const Login = () => {
     try {
       // First get CSRF cookie
       // await axios.get(`${API_BASE_URL ? API_BASE_URL : 'http://localhost:8000'}/sanctum/csrf-cookie`);
+      // await axios.get(
+      //   `${
+      //     API_BASE_URL ? "https://api.namm.com.ng" : "http://localhost:8000"
+      //   }/sanctum/csrf-cookie`
+      // );
       await axios.get(
         `${
-          API_BASE_URL ? "https://api.namm.com.ng" : "http://localhost:8000"
+          API_BASE_URL ? "https://www.nafcservices.com.ng" : "http://localhost:8000"
         }/sanctum/csrf-cookie`
       );
 
