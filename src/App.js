@@ -22,6 +22,7 @@ import AdminReports from "./pages/AdminReports";
 import RemitterReports from "./pages/RemitterReports";
 import MonthlyTarget from "./pages/MonthlyTarget";
 import EditUser from "./pages/EditUser";
+import NotificationsPage from "./pages/NotificationPage";
 
 // Main application component
 function App() {
@@ -31,6 +32,8 @@ function App() {
         {/* Public routes */}
         <Route path="/" element={<Home />} />
         {/* <Route path="/register" element={<Register />} /> */}
+
+        <Route path="/notifications" element={<NotificationsPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/logout" element={<Logout/>} />
         <Route path="/reset-password" element={<ResetPassword />} />
