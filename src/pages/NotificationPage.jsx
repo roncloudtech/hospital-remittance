@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { CheckCircleIcon } from "@heroicons/react/24/outline";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 import DashboardSideBar from "../components/DashboardSideBar";
 import DashboardHeader from "../components/DashboardHeader";
 
@@ -8,6 +9,7 @@ export default function NotificationsPage() {
   // Base API URL
   const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const navigate = useNavigate();
+  const { authToken, user } = useAuth();
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -17,7 +19,13 @@ export default function NotificationsPage() {
     if (!token) {
       navigate("/login");
     }
-  }, [navigate, token]);
+
+    // Redirect if not admin
+    if (user?.role !== "admin") {
+      navigate("/unauthorized");
+      return;
+    }
+  }, [navigate, token, user]);
 
   // Fetch notifications
   const fetchNotifications = async () => {

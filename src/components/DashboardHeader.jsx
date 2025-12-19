@@ -70,18 +70,21 @@ export default function DashboardHeader({ PageTitle }) {
         {/* Right */}
         <div className="flex items-center gap-6">
           {/* 🔔 Notification Bell */}
-          <div
-            className="relative cursor-pointer"
-            onClick={() => navigate("/notifications")}
-          >
-            <BellIcon className="h-7 w-7 text-green-900" />
 
-            {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
-                {unreadCount}
-              </span>
-            )}
-          </div>
+          {user?.role === "admin" && (
+            <div
+                className="relative cursor-pointer"
+                onClick={() => navigate("/notifications")}
+            >
+                <BellIcon className="h-7 w-7 text-green-900" />
+
+                {unreadCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
+                    {unreadCount}
+                </span>
+                )}
+            </div>
+          )}
 
           {/* User Info */}
           <div className="text-right">
