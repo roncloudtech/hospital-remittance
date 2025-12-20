@@ -57,15 +57,18 @@ export default function NotificationsPage() {
   // Mark single notification as read
   const markAsRead = async (id) => {
     try {
-      await fetch(`${
+      await fetch(
+        `${
           API_BASE_URL ? API_BASE_URL : "http://localhost:8000/api"
-        }/notifications/${id}/read`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
+        }/notifications/${id}/read`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
 
       setNotifications((prev) =>
         prev.map((n) => (n.id === id ? { ...n, read_at: new Date() } : n))
@@ -78,15 +81,18 @@ export default function NotificationsPage() {
   // Mark all as read
   const markAllAsRead = async () => {
     try {
-      await fetch(`${
+      await fetch(
+        `${
           API_BASE_URL ? API_BASE_URL : "http://localhost:8000/api"
-        }/notifications/read-all`, {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${token}`,
-          Accept: "application/json",
-        },
-      });
+        }/notifications/read-all`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+            Accept: "application/json",
+          },
+        }
+      );
 
       setNotifications((prev) =>
         prev.map((n) => ({ ...n, read_at: new Date() }))

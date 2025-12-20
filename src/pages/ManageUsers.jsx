@@ -155,7 +155,12 @@ const ManageUsers = () => {
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {users.map((user) => (
-                        <tr key={user.id}>
+                        <tr
+                          key={user.id}
+                          className={
+                            user.deleted_at ? "bg-gray-100 opacity-70" : ""
+                          }
+                        >
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {user.firstname} {user.lastname}
                           </td>
@@ -174,22 +179,23 @@ const ManageUsers = () => {
                                 Edit
                               </NavLink>
                             </button>
-                            {/* <button className="text-red-600 hover:text-red-900">
-                              Delete
-                            </button> */}
                             {user.deleted_at ? (
                               <button
-                                onClick={() => handleRestore(user.id, user.email)}
+                                onClick={() =>
+                                  handleRestore(user.id, user.email)
+                                }
                                 className="text-blue-600 hover:text-blue-900"
                               >
                                 Restore
                               </button>
                             ) : (
                               <button
-                                onClick={() => handleDelete(user.id, user.email)}
+                                onClick={() =>
+                                  handleDelete(user.id, user.email)
+                                }
                                 className="text-red-600 hover:text-red-900"
                               >
-                                Delete
+                                Disable
                               </button>
                             )}
                           </td>

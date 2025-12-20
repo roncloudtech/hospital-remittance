@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext"; // Auth context
 
 const Logout = () => {
   // Base API URL
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
   const navigate = useNavigate();
   const { logout } = useAuth(); // Logout function from context
 
@@ -17,7 +17,7 @@ const API_BASE_URL = process.env.REACT_APP_API_BASE_URL;
           {},
           {
             headers: {
-              Authorization: `Bearer ${localStorage.getItem("token")}`,
+              Authorization: `Bearer ${localStorage.getItem("military_token")}`,
               Accept: "application/json", // This helps Laravel respond with JSON and handle auth
             },
           }

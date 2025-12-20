@@ -45,6 +45,52 @@ const ManageHospitals = () => {
     fetchHospitals();
   }, [authToken, navigate, user, API_BASE_URL]);
 
+  const handleDisableHospital = async (id) => {
+    if (!window.confirm("Are you sure you want to disable this hospital?"))
+      return;
+
+    try {
+      await axios.delete(
+        `${API_BASE_URL ?? "http://localhost:8000/api"}/hospital/delete/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+
+      // Update UI without refetch
+      setHospitals((prev) =>
+        prev.map((h) =>
+          h.id === id ? { ...h, deleted_at: new Date().toISOString() } : h
+        )
+      );
+    } catch (error) {
+      alert("Failed to disable hospital");
+    }
+  };
+
+  const handleRestoreHospital = async (id) => {
+    try {
+      await axios.put(
+        `${API_BASE_URL ?? "http://localhost:8000/api"}/hospital/restore/${id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
+
+      // Update UI without refetch
+      setHospitals((prev) =>
+        prev.map((h) => (h.id === id ? { ...h, deleted_at: null } : h))
+      );
+      alert("Hospital restored successfully");
+    } catch (error) {
+      alert("Failed to restore hospital");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -103,7 +149,12 @@ const ManageHospitals = () => {
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                       {hospitals.map((hospital) => (
-                        <tr key={hospital.id}>
+                        <tr
+                          key={hospital.id}
+                          className={
+                            hospital.deleted_at ? "bg-gray-100 opacity-70" : ""
+                          }
+                        >
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {hospital.hospital_name}
                           </td>
@@ -126,9 +177,29 @@ const ManageHospitals = () => {
                             >
                               Edit
                             </NavLink>
-                            <button className="text-red-600 hover:text-red-900">
+                            {hospital.deleted_at ? (
+                              <button
+                                onClick={() =>
+                                  handleRestoreHospital(hospital.id)
+                                }
+                                className="text-green-600 hover:text-green-900 font-medium"
+                              >
+                                Restore
+                              </button>
+                            ) : (
+                              <button
+                                onClick={() =>
+                                  handleDisableHospital(hospital.id)
+                                }
+                                className="text-red-600 hover:text-red-900 font-medium"
+                              >
+                                Disable
+                              </button>
+                            )}
+
+                            {/* <button className="text-red-600 hover:text-red-900">
                               Delete
-                            </button>
+                            </button> */}
                           </td>
                         </tr>
                       ))}

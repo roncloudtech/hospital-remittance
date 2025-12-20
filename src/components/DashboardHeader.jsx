@@ -37,9 +37,12 @@ export default function DashboardHeader({ PageTitle }) {
         }
       );
 
+      // console.log("Fetching unread notifications count", res);
+
       if (res.ok) {
         const data = await res.json();
-        setUnreadCount(data.unread);
+        console.log("Unread notifications count:", data.count);
+        setUnreadCount(data.count);
       }
     } catch (error) {
       console.error("Failed to fetch unread notifications", error);
@@ -77,7 +80,7 @@ export default function DashboardHeader({ PageTitle }) {
                 onClick={() => navigate("/notifications")}
             >
                 <BellIcon className="h-7 w-7 text-green-900" />
-
+                {/* {unreadCount} */}
                 {unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-red-600 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
                     {unreadCount}
