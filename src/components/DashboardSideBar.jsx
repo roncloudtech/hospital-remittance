@@ -125,6 +125,7 @@ export default function DashboardSideBar() {
               <span className="ml-3">Overview</span>
             )}
           </NavLink>
+
           {/* Admin-only Links */}
           {user?.role === "admin" && (
             <>
@@ -185,6 +186,7 @@ export default function DashboardSideBar() {
               </NavLink>
             </>
           )}
+
           {/* Remitter Links */}
           {user?.role === "remitter" && (
             <>
@@ -217,6 +219,7 @@ export default function DashboardSideBar() {
               </NavLink>
             </>
           )}
+          
           {/* Common Reports Link */}
           <NavLink
             to="/transactions"
