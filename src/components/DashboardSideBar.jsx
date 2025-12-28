@@ -10,6 +10,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   Bars3Icon,
+  ClipboardDocumentCheckIcon,
   ArrowLeftOnRectangleIcon,
 } from "@heroicons/react/24/outline";
 import { useAuth } from "../context/AuthContext";
@@ -167,6 +168,20 @@ export default function DashboardSideBar() {
               >
                 <ShieldCheckIcon className="h-5 w-5" />
                 {!isCollapsed && <span className="ml-3">Admin Reports</span>}
+              </NavLink>
+              
+              <NavLink
+                to="/audit-logs"
+                className={({ isActive }) =>
+                  `flex items-center px-4 py-3 text-sm font-medium ${
+                    isActive
+                      ? "bg-green-800 text-yellow-400"
+                      : "text-gray-300 hover:bg-green-800"
+                  } ${isCollapsed ? "justify-center" : "px-6"}`
+                }
+              >
+                <ClipboardDocumentCheckIcon className="h-5 w-5" />
+                {!isCollapsed && <span className="ml-3">Audit Logs</span>}
               </NavLink>
             </>
           )}

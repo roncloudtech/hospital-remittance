@@ -22,6 +22,7 @@ import AdminReports from "./pages/AdminReports";
 import RemitterReports from "./pages/RemitterReports";
 import MonthlyTarget from "./pages/MonthlyTarget";
 import EditUser from "./pages/EditUser";
+import AuditLogPage from "./pages/AuditLogPage";
 import NotificationsPage from "./pages/NotificationPage";
 
 // Main application component
@@ -61,6 +62,7 @@ function App() {
           <Route path="/manage-hospitals" element={<ManageHospitals />} />
           <Route path="/add-hospital" element={<AddHospital/>}/>
           <Route path="/admin-reports" element={<AdminReports/>} />
+          <Route path="/audit-logs" element={<AuditLogPage/>} />
         </Route>
 
         {/* Remitter-only routes */}
