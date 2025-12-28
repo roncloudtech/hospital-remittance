@@ -1,13 +1,17 @@
-import React, { useEffect, useState } from "react";
-import DashboardSideBar from "../components/DashboardSideBar";
-import DashboardHeader from "../components/DashboardHeader";
+import Papa from "papaparse";
+import { saveAs } from "file-saver";
+import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { FunnelIcon } from "@heroicons/react/24/outline";
+import DashboardHeader from "../components/DashboardHeader";
+import DashboardSideBar from "../components/DashboardSideBar";
 
 export default function AuditLogPage() {
   const API_BASE_URL =
     process.env.REACT_APP_API_BASE_URL ?? "http://localhost:8000/api";
   const { authToken } = useAuth();
+
+  const [search, setSearch] = useState("");
 
   const [logs, setLogs] = useState([]);
   const [filters, setFilters] = useState({
@@ -21,9 +25,30 @@ export default function AuditLogPage() {
   const [loading, setLoading] = useState(true);
   const [pagination, setPagination] = useState({});
 
+  // const fetchLogs = async (url = `${API_BASE_URL}/audit-logs`) => {
+  //   try {
+  //     const params = new URLSearchParams(filters).toString();
+
+  //     const res = await fetch(`${url}?${params}`, {
+  //       headers: {
+  //         Authorization: `Bearer ${authToken}`,
+  //         Accept: "application/json",
+  //       },
+  //     });
+
+  //     const data = await res.json();
+  //     setLogs(data.logs.data);
+  //     setPagination(data.logs);
+  //   } catch (error) {
+  //     console.error("Failed to fetch audit logs", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const fetchLogs = async (url = `${API_BASE_URL}/audit-logs`) => {
     try {
-      const params = new URLSearchParams(filters).toString();
+      const params = new URLSearchParams({ search }).toString();
 
       const res = await fetch(`${url}?${params}`, {
         headers: {
@@ -40,6 +65,26 @@ export default function AuditLogPage() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleCSVExport = () => {
+    const data = logs.map((log) => ({
+      Actor: log.actor_name,
+      Role: log.actor_role,
+      Action: log.action,
+      Description: log.description,
+      IP_Address: log.ip_address,
+      Date: new Date(log.created_at).toLocaleString(),
+    }));
+
+    if (data.length === 0) {
+      alert("No audit logs to export");
+      return;
+    }
+
+    const csv = Papa.unparse(data);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    saveAs(blob, `audit_logs_${Date.now()}.csv`);
   };
 
   useEffect(() => {
@@ -64,7 +109,7 @@ export default function AuditLogPage() {
 
         <div className="p-6 max-w-7xl mx-auto">
           {/* Filters */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
+          {/* <div className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-4">
             <input
               name="action"
               placeholder="Action"
@@ -98,15 +143,43 @@ export default function AuditLogPage() {
               onChange={handleFilterChange}
               className="border p-2 rounded"
             />
-          </div>
+          </div> */}
 
-          <button
+          {/* <button
             onClick={applyFilters}
             className="mb-4 bg-green-900 text-white px-4 py-2 rounded"
           >
             Apply Filters
             <FunnelIcon className="inline-block w-4 h-4 ml-2" />
-          </button>
+          </button> */}
+
+          <div className="flex flex-col md:flex-row gap-3 mb-4">
+            <input
+              type="text"
+              placeholder="Search actor, role, action, description or IP..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              className="border p-2 rounded w-full md:w-2/3"
+            />
+
+            <button
+              onClick={() => {
+                setLoading(true);
+                fetchLogs();
+              }}
+              className="bg-green-900 text-white px-4 py-2 rounded"
+            >
+              Search
+              <FunnelIcon className="inline-block w-4 h-4 ml-2" />
+            </button>
+
+            <button
+              onClick={handleCSVExport}
+              className="bg-blue-700 text-white px-4 py-2 rounded"
+            >
+              Export CSV
+            </button>
+          </div>
 
           {/* Table */}
           {loading ? (
